@@ -7,18 +7,23 @@
         <script src="https://kit.fontawesome.com/b44dbccbe8.js" crossorigin="anonymous"></script>
         <script type="text/javascript" src="myscript.js"></script>
         <link rel="stylesheet" href="style.css">
+
     </head>
 
     <body>
         <div class="viz"></div>
-            <div class="searchbox">
-                <input  type="text" onfocus="firstTimeSearchFocus();" class="input" placeholder="What are your symptoms?">
-                <div class="searchbtn">
-                    <i class="fas fa-search"></i>
+            <div>
+                <div class="searchbox" style="z-index: 2;">
+                    <input  type="text"  onfocus="firstTimeSearchFocus();" class="input" placeholder="What are your symptoms?">
+                    <div class="searchbtn">
+                        <i class="fas fa-search"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="bashboard">
-
+                <div class="searchListDiv">
+                    <ul class="searchList"></ul>
+                </div>
+                <div class="bashboard" style="z-index: 1; position:absolute; top:30%; width:100%; height:100px; background-color:red;">
+                </div>
             </div>
         </div>
     </body>

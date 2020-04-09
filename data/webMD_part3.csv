@@ -1,3 +1,4 @@
+Age,Condition,Date,Drug,DrugId,EaseofUse,Effectiveness,Satisfaction,Sex,Sides,UsefulCount
 75 or over,Stuffy Nose,9/21/2014,25dph-7.5peh,146724,5,5,5,Male,"Drowsiness,  dizziness ,  dry mouth /nose/throat,  headache ,  upset stomach ,  constipation , or  trouble sleeping  may occur.",0
 25-34,Cold Symptoms,1/13/2011,25dph-7.5peh,146724,5,5,5,Female,"Drowsiness,  dizziness ,  dry mouth /nose/throat,  headache ,  upset stomach ,  constipation , or  trouble sleeping  may occur.",1
 65-74,Other,7/16/2012,warfarin (bulk) 100 % powder,144731,2,3,3,Female, ,0

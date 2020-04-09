@@ -46,10 +46,35 @@
     border-radius: 5px;
 }
 
+.b{
+    transform: translate(-10%,-10%);
+    
+}
 .searchbtn .fas{
     position: absolute;
     top:50%;
     left:50%;
-    transform: translate(-50%,-50%);
     font-size: 18px;
+}
+.searchListDiv{
+    z-index: 3;
+    position: absolute;
+    top:25%;
+    left:50%;
+    width:85%;
+    border-radius: 5px;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,1);
+}
+.searchOpt{
+    
+    color: red;
+    
+    border-top: 2px solid rgb(65, 64, 64);
+    border-bottom: 2px solid rgb(65, 64, 64);
+    border-radius: 5px;
+    display:flex;
+    justify-content: space-between;
+    padding: 15px 20px;
+    font-weight: bold;
 }
