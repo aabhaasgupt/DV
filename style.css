@@ -5,7 +5,7 @@
         top:50%
     }
     to{
-        top:10%
+        top:15%
     }
 }
 
@@ -38,6 +38,15 @@
     border-radius: 5px;
     font-weight: bold;
 }
+
+
+.searchText{
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+}
+
 .searchbtn{
     background: #ffec00;
     width:10%;
@@ -46,14 +55,11 @@
     border-radius: 5px;
 }
 
-.b{
-    transform: translate(-10%,-10%);
-    
-}
 .searchbtn .fas{
     position: absolute;
     top:50%;
     left:50%;
+    transform: translate(-50%,-50%);
     font-size: 18px;
 }
 .searchListDiv{
@@ -78,3 +84,23 @@
     padding: 15px 20px;
     font-weight: bold;
 }
+
+.aSearchTag{
+    width:fit-content;
+    margin: 3px;
+    padding:10px;
+    color:white;
+    background-color: black;
+    border-radius: 10px;
+    display:flex;
+}
+/* .tagCross{
+    width:10%;
+    position: relative;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.crossFas{
+    padding:10px;
+} */

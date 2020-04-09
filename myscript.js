@@ -1,5 +1,18 @@
 firstTimeFocus = true
 conditions = []
+searchTags = []
+function updateSearchTags(){
+    // tempTags = searchTags.map(searchTag => `<div class=aSearchTag><div class="searchText">${searchTag}</div><div class="tagCross"><i class="fas fa-times crossFas"></i></div></div>`)
+    tempTags = searchTags.map(searchTag => `<div class=aSearchTag>${searchTag}</div>`)
+    $(".searchTags").html(!tempTags ? '' : tempTags.join(''));
+    $('.aSearchTag').on('click', function(){
+        console.log($(this).text());
+        searchTags = searchTags.filter(searchTag => searchTag != $(this).text());
+        $(".searchTags").html('');
+        updateSearchTags()
+    });
+}
+
 function firstTimeSearchFocus() {
     if(firstTimeFocus)
     {
@@ -8,7 +21,7 @@ function firstTimeSearchFocus() {
     else{
         return;
     }
-    $(".searchbox").css({"animation-name":"searchMoveUp", "animation-duration":"1s"}).css({"top":"10%"});
+    $(".searchbox").css({"animation-name":"searchMoveUp", "animation-duration":"1s"}).css({"top":"15%"});
 }
 
 function csvJSON(csv){
@@ -65,7 +78,7 @@ $(document).ready(function(){
     })
     $( ".input" ).keyup(function(data) {
         
-        $('.searchOpt').off('click');
+        //$('.searchOpt').off('click');
         let searchOptions = []
         
         searchOptions = conditions.filter(condition => condition.toLowerCase().includes(data.target.value.toLowerCase()));
@@ -78,15 +91,16 @@ $(document).ready(function(){
         $(".searchList").html(!searchOptions ? '' : searchOptions.join(''));
         // console.log(searchOptions);
         
+        // $('.input').on('focusin',function(){
+        //     console.log('focussed')
+        // })
+        
         $('.searchOpt').on('click', function(){
-            console.log("hii")
             $(".input").val($(this).text())
             $('.searchOpt').off('click');
             $(".searchList").html('');
-            $(".input").on('focusout', function(){
-                $(".searchList").html('');
-                $(".input").off('focusout')
-            })
+            searchTags.push($(this).text())
+            updateSearchTags()
         });
         
     });
