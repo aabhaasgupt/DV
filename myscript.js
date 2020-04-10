@@ -2,16 +2,75 @@ firstTimeFocus = true
 conditions = []
 searchTags = []
 searchTop = 0
+drugIdDict = []
+drugsConditionDict = []
+drugPanelIds = []
+drugPanelDrugs = []
+
+function makeGraph(drug_ids){
+    console.log(drug_ids)
+}
+
+function findCommonElements(inArrays) {
+  // check for valid input
+  if (typeof inArrays==="undefined") return undefined;
+  if (typeof inArrays[0]==="undefined") return undefined;
+  
+  return _.intersection.apply(this, inArrays);
+}
+
+
+function removeSymptomsWithNoCommonDrugs(myconditions, mysearchTags){
+    new_conditions = []
+
+    my_conditions_with_common_drugs = []
+    for(i=0;i<searchTags.length;i++){
+        my_conditions_with_common_drugs.push(drugsConditionDict[searchTags[i]])
+    }
+
+    for(i=0;i<myconditions.length;i++){
+        my_conditions_with_common_drugs.push(drugsConditionDict[myconditions[i]])
+        myPossibleSymptoms = findCommonElements(my_conditions_with_common_drugs);
+        if(myPossibleSymptoms.length != 0){
+            new_conditions.push(myconditions[i])
+        }
+        my_conditions_with_common_drugs.pop()
+    }
+    return new_conditions
+}
+
+function updateDrugsPanel(){
+    drugPanelIds = []
+    conditions_with_common_drugs = []
+    for(i=0;i<searchTags.length;i++){
+        conditions_with_common_drugs.push(drugsConditionDict[searchTags[i]])
+    }
+    
+    drugPanelIds = findCommonElements(conditions_with_common_drugs);
+    
+    if(drugPanelIds != null){
+        drugPanelDrugs = drugPanelIds.map(drugPanelId => drugIdDict[drugPanelId])
+        drugsList = drugPanelDrugs.map(drug => `<li class=drugOpt value=${drug}>${drug}</li>`)
+        $(".drugList").html(!drugsList ? '' : drugsList.join(''));
+        makeGraph(drugPanelIds)
+    }
+    else{
+        $(".drugList").html('')
+    }
+}
+
 function updateSearchTags() {
     // tempTags = searchTags.map(searchTag => `<div class=aSearchTag><div class="searchText">${searchTag}</div><div class="tagCross"><i class="fas fa-times crossFas"></i></div></div>`)
     tempTags = searchTags.map(searchTag => `<div class=aSearchTag>${searchTag}</div>`)
     $(".searchTags").html(!tempTags ? '' : tempTags.join(''));
     $('.aSearchTag').on('click', function () {
-        console.log($(this).text());
+        // console.log($(this).text());
         searchTags = searchTags.filter(searchTag => searchTag != $(this).text());
         $(".searchTags").html('');
         updateSearchTags()
     });
+
+    updateDrugsPanel()
 }
 
 function firstTimeSearchFocus() {
@@ -101,11 +160,12 @@ $(document).ready(function () {
             //     console.log(i,conditions[i]);
             // }
         }
-    })
+    });
+
     $(".input").keyup(function (data) {
         let searchOptions = []
         updatedConditions = removeSelected(conditions, searchTags)
-        //updatedConditions = theOtherFunction(conditions, searchTags)
+        updatedConditions = removeSymptomsWithNoCommonDrugs(updatedConditions, searchTags)
 
         searchOptions = updatedConditions.filter(condition => condition.toLowerCase().includes(data.target.value.toLowerCase()));
         if (data.target.value == '') {
@@ -124,10 +184,11 @@ $(document).ready(function () {
         });
 
     });
+
     $('.searchbtn').on('click', function(){
         currVal = $(".input").val()
         updatedConditions = removeSelected(conditions, searchTags)
-        //updatedConditions = theOtherFunction(conditions, searchTags)
+        updatedConditions = removeSymptomsWithNoCommonDrugs(updatedConditions, searchTags)
 
         searchOptions = updatedConditions.filter(condition => condition.toLowerCase() == currVal.toLowerCase());
         if (searchOptions.length != 0) {
