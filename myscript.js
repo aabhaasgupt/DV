@@ -1,14 +1,19 @@
 firstTimeFocus = true
-conditions = []
-searchTags = []
 searchTop = 0
-drugIdDict = []
-drugsConditionDict = []
+searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
 
-function makeGraph(drug_ids){
+
+conditions = []
+drugIdDict = []
+drugsConditionDict = []
+datasetJson = null
+
+function makeGraph(drug_ids, drug_names){
+    // use div with class -> graphPannel
     console.log(drug_ids)
+    console.log(drug_names)
 }
 
 function findCommonElements(inArrays) {
@@ -18,7 +23,6 @@ function findCommonElements(inArrays) {
   
   return _.intersection.apply(this, inArrays);
 }
-
 
 function removeSymptomsWithNoCommonDrugs(myconditions, mysearchTags){
     new_conditions = []
@@ -52,7 +56,7 @@ function updateDrugsPanel(){
         drugPanelDrugs = drugPanelIds.map(drugPanelId => drugIdDict[drugPanelId])
         drugsList = drugPanelDrugs.map(drug => `<li class=drugOpt value=${drug}>${drug}</li>`)
         $(".drugList").html(!drugsList ? '' : drugsList.join(''));
-        makeGraph(drugPanelIds)
+        makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{
         $(".drugList").html('')
@@ -129,9 +133,9 @@ function toDict(json,key,value){
 function getColAsArray(Json, key) {
 
     arr = [];
-    for (i = 0; i < myJ.length; i++) {
+    for (i = 0; i < Json.length; i++) {
         // console.log(i,myJ[i][key])
-        arr.push(myJ[i][key]);
+        arr.push(Json[i][key]);
     }
     return arr;
 }
@@ -146,12 +150,12 @@ $(document).ready(function () {
         url: "data/webMD_part3.csv",
         dataType: "text",
         success: function (data) {
-            myJ = csvJSON(data)
-            conditions = getColAsArray(myJ,"Condition");
+            datasetJson = csvJSON(data)
+            conditions = getColAsArray(datasetJson,"Condition");
             conditions.pop()
             conditions = Array.from(new Set(conditions))
-            drugIdDict = toDict(myJ, "DrugId", "Drug")
-            drugsConditionDict = toDict(myJ, "Condition", "DrugId")
+            drugIdDict = toDict(datasetJson, "DrugId", "Drug")
+            drugsConditionDict = toDict(datasetJson, "Condition", "DrugId")
             // console.log(drugIdDict)
             // console.log(drugsConditionDict)
 
