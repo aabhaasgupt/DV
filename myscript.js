@@ -25,28 +25,45 @@ function firstTimeSearchFocus() {
     searchContent = $(".searchContent").css("top")
 }
 
-function csvJSON(csv) {
-    var lines = csv.split("\n");
+function csvJSON(csv){
+    var lines=csv.split("\n");
     var result = [];
-    var headers = lines[0].split(",");
-
-    for (var i = 1; i < lines.length; i++) {
-
+    var headers=lines[0].split("~");
+  
+    for(var i=1;i<lines.length;i++){
+  
         var obj = {};
-        var currentline = lines[i].split(",");
-
-        for (var j = 0; j < headers.length; j++) {
+        var currentline=lines[i].split("~");
+  
+        for(var j=0;j<headers.length;j++){
             // if(currentline[j] == "")
             // {
             //     obj[headers[j]] = lines[i-1].split(",")[j];
             // }
             obj[headers[j]] = currentline[j];
         }
-
+  
         result.push(obj);
-
+  
     }
     return result; //JSON
+}
+
+function toDict(json,key,value){
+    var dict = {};
+    for (i=0;i<json.length;i++)
+    {   //console.log(i, json[i])
+        if (dict[json[i][key]]==null){
+            dict[json[i][key]] = []
+        }
+        if (dict[json[i][key]]){
+            dict[json[i][key]].push(json[i][value]);
+            dict[json[i][key]] = Array.from(new Set(dict[json[i][key]]))
+        }
+        
+    }
+    
+    return dict;
 }
 
 function getColAsArray(Json, key) {
@@ -70,9 +87,13 @@ $(document).ready(function () {
         dataType: "text",
         success: function (data) {
             myJ = csvJSON(data)
-            conditions = getColAsArray(myJ, "Condition");
+            conditions = getColAsArray(myJ,"Condition");
             conditions.pop()
             conditions = Array.from(new Set(conditions))
+            drugIdDict = toDict(myJ, "DrugId", "Drug")
+            drugsConditionDict = toDict(myJ, "Condition", "DrugId")
+            console.log(drugIdDict)
+            console.log(drugsConditionDict)
 
             // for (i=0;i<conditions.length-1;i++)
             // {

@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy as np
+
 # with open("webmd_part.csv") as f:
 #     for row in f:
 #         print(row)
@@ -9,10 +11,12 @@ def remove_non_ascii(text):
 MainFile = pd.read_excel("data/webmd_part.xlsx")
 #print(a['Condition'])
 MainFile = MainFile.drop('Reviews', 1)
+MainFile = MainFile.replace(r'^\s*$', "NULL", regex=True)
+print(MainFile.head(12))
 # for col in MainFile:
 #     print(MainFile.dtypes[col])
 
-MainFile.to_csv('data/webMD_part3.csv', index = False, header=True)
+MainFile.to_csv('data/webMD_part5.csv', index = False, header=True, sep = '~')
 # for Col in MainFile:
 #     if (MainFile.dtypes[col] == "object"):
 #         #MainFile[Col] = MainFile[Col].str.encode('utf-8', 'ignore').str.decode('utf-8')
