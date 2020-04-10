@@ -1,6 +1,7 @@
 firstTimeFocus = true
 conditions = []
 searchTags = []
+searchTop = 0
 function updateSearchTags(){
     // tempTags = searchTags.map(searchTag => `<div class=aSearchTag><div class="searchText">${searchTag}</div><div class="tagCross"><i class="fas fa-times crossFas"></i></div></div>`)
     tempTags = searchTags.map(searchTag => `<div class=aSearchTag>${searchTag}</div>`)
@@ -21,7 +22,8 @@ function firstTimeSearchFocus() {
     else{
         return;
     }
-    $(".searchbox").css({"animation-name":"searchMoveUp", "animation-duration":"1s"}).css({"top":"15%"});
+    $(".searchContent").css({"animation-name":"searchMoveUp", "animation-duration":"1s"}).css({"top":"20%"});
+    searchContent = $(".searchContent").css("top")
 }
 
 function csvJSON(csv){
@@ -77,7 +79,10 @@ $(document).ready(function(){
         }
     })
     $( ".input" ).keyup(function(data) {
-        
+        // console.log("cur top", $(".searchContent").css("top"))
+        // console.log("height", parseInt($(".searchContent").css("height"))-75)
+        // $(".searchContent").css("top",parseInt($(".searchContent").css("top"))+parseInt($(".searchContent").css("height"))-75)
+        // console.log("init top", searchContent)
         //$('.searchOpt').off('click');
         let searchOptions = []
         
