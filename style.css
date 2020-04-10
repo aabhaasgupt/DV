@@ -8,6 +8,17 @@
         top:20%
     }
 }
+@keyframes dashboardMoveUp{
+    from{
+        top:100%;
+        opacity: 0;
+    }
+    to{
+        
+        top:60%;
+        opacity: 1;
+    }
+}
 
 *{
     margin:0;
@@ -112,13 +123,18 @@
 .crossFas{
     padding:10px;
 } */
-
+.searchTags{
+    display: flex; 
+    position: absolute;
+}
 
 .dashboard{
-    /* position: absolute;
-    bottom: 20%; */
-    height:60%;
-    /* left: 50%; */
-    /* transform: translate(-50%,-50%); */
-    /* background-color:red; */
+    opacity:0;
+    position: relative;
+    height:80%;
+    top:100%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    background-color:green;
+    z-index: -1;
 }

@@ -22,7 +22,8 @@ function firstTimeSearchFocus() {
         return;
     }
     $(".searchContent").css({ "animation-name": "searchMoveUp", "animation-duration": "1s" }).css({ "top": "20%" });
-    searchContent = $(".searchContent").css("top")
+    $(".dashboard").css({ "animation-name": "dashboardMoveUp", "animation-duration": "1s" }).css({ "top": "60%", "opacity":"1" });
+    
 }
 
 function csvJSON(csv){
@@ -92,8 +93,8 @@ $(document).ready(function () {
             conditions = Array.from(new Set(conditions))
             drugIdDict = toDict(myJ, "DrugId", "Drug")
             drugsConditionDict = toDict(myJ, "Condition", "DrugId")
-            console.log(drugIdDict)
-            console.log(drugsConditionDict)
+            // console.log(drugIdDict)
+            // console.log(drugsConditionDict)
 
             // for (i=0;i<conditions.length-1;i++)
             // {
@@ -102,13 +103,7 @@ $(document).ready(function () {
         }
     })
     $(".input").keyup(function (data) {
-        // console.log("cur top", $(".searchContent").css("top"))
-        // console.log("height", parseInt($(".searchContent").css("height"))-75)
-        // $(".searchContent").css("top",parseInt($(".searchContent").css("top"))+parseInt($(".searchContent").css("height"))-75)
-        // console.log("init top", searchContent)
-        //$('.searchOpt').off('click');
         let searchOptions = []
-        //updatedConditions = conditions;
         updatedConditions = removeSelected(conditions, searchTags)
         //updatedConditions = theOtherFunction(conditions, searchTags)
 
@@ -116,13 +111,9 @@ $(document).ready(function () {
         if (data.target.value == '') {
             searchOptions = []
         }
-
+        
         searchOptions = searchOptions.map(searchOption => `<li class=searchOpt value=${searchOption}>${searchOption}</li>`)
         $(".searchList").html(!searchOptions ? '' : searchOptions.join(''));
-        // console.log(searchOptions);
-        // $('.input').on('focusin',function(){
-        //     console.log('focussed')
-        // })
 
         $('.searchOpt').on('click', function () {
             $(".input").val($(this).text())
@@ -137,6 +128,7 @@ $(document).ready(function () {
         currVal = $(".input").val()
         updatedConditions = removeSelected(conditions, searchTags)
         //updatedConditions = theOtherFunction(conditions, searchTags)
+
         searchOptions = updatedConditions.filter(condition => condition.toLowerCase() == currVal.toLowerCase());
         if (searchOptions.length != 0) {
             searchTags.push(currVal)
