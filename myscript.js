@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-
+inputFile = "data/webMD_part10.csv"
 
 conditions = []
 drugIdDict = []
@@ -143,16 +143,43 @@ function makeGraph(drug_ids, drug_names){
         // console.log(d)
         return colors[i]; });
 
+
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg.append("g")
+    .attr("class", "tooltip")
+    //.style("display", "none");
+        
+    tooltip.append("rect")
+    .attr("width", 30)
+    .attr("height", 20)
+    .attr("fill", "white")
+    .style("opacity", 0.5);
+
+    tooltip.append("text")
+    .attr("x", 15)
+    .attr("dy", "1.2em")
+    .style("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("font-weight", "bold");
+    // console.log(tooltip)
+
+
     var rect = groups.selectAll("rect")
     .data(function(d) { return d; })
     .enter()
     .append("rect")
+    .attr("class", "dataRect")
     .attr("x", function(d) { return x(d.x); })
     .attr("y", function(d) { 
         return y(d.y0 + d.y); })
-    .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
+    .attr("height", function(d) { 
+        console.log("yoo")
+        return y(d.y0) - y(d.y0 + d.y); })
     .attr("width", x.rangeBand())
-    .on("mouseover", function() { tooltip.style("display", null); })
+    .on("mouseover",function() { 
+        console.log("onover")
+        tooltip.style("display", null); 
+    })
     .on("mouseout", function() { tooltip.style("display", "none"); })
     .on("mousemove", function(d) {
         var xPosition = d3.mouse(this)[0] - 15;
@@ -182,129 +209,107 @@ function makeGraph(drug_ids, drug_names){
     .style("text-anchor", "start")
     .text(function(d, i) { 
         return drug_names[i]
-        // switch (i) {
-        // case 0: return "Anjou pears";
-        // case 1: return "Naval oranges";
-        // case 2: return "McIntosh apples";
-        // case 3: return "Red Delicious apples";
-        // }
     });
 
 
-    // Prep the tooltip bits, initial display is hidden
-    var tooltip = svg.append("g")
-    .attr("class", "tooltip")
-    .style("display", "none");
-        
-    tooltip.append("rect")
-    .attr("width", 30)
-    .attr("height", 20)
-    .attr("fill", "white")
-    .style("opacity", 0.5);
-
-    tooltip.append("text")
-    .attr("x", 15)
-    .attr("dy", "1.2em")
-    .style("text-anchor", "middle")
-    .attr("font-size", "12px")
-    .attr("font-weight", "bold");
+    
 }
 
-function makeGraph_old(drug_ids, drug_names){
+// function makeGraph_old(drug_ids, drug_names){
 
-    axis_xval = []
-    $(".graphpannel").html('')
-    var canvas = d3.select(".graphpannel").append('svg')
-                                            .attr("height","100%")
-                                            .attr("width", "100%")
-                                            .attr("y","10%")
-                                            // .style("fill","white");
-    var rect = canvas.append('rect')
-                        .attr("height","80%")
-                        .attr("width", "100%")
-                        .attr("y","10%")
-                        .style("fill","white");
-    barGdata = filterbytags_andCreateXY(drug_ids,searchTags,drugsSatisfactionDict)
+//     axis_xval = []
+//     $(".graphpannel").html('')
+//     var canvas = d3.select(".graphpannel").append('svg')
+//                                             .attr("height","100%")
+//                                             .attr("width", "100%")
+//                                             .attr("y","10%")
+//                                             // .style("fill","white");
+//     var rect = canvas.append('rect')
+//                         .attr("height","80%")
+//                         .attr("width", "100%")
+//                         .attr("y","10%")
+//                         .style("fill","white");
+//     barGdata = filterbytags_andCreateXY(drug_ids,searchTags,drugsSatisfactionDict)
 
-    stackdata = drug_ids.map(function(c){
-        return barGdata.map(function(d,i) {
-          return {x:d["condition"], y:d[c]} })
-        })
-    var stack = d3.layout.stack()
-    var dataset_cond = stack(stackdata)
-    console.log(dataset_cond)
-    classInd = 0
-    var groups = canvas.selectAll("g")
-                    .data(dataset_cond)
-                    .enter()
-                    .append("g")
-                    .attr("class", function(d){
-                        classInd += 1
-                        return "barGroup"+(classInd-1).toString()
-                    })
-                    .style("fill", function(d, i) {
-                        // console.log(i)
-                        // console.log(d) 
-                        return stachColorArr[i]})
+//     stackdata = drug_ids.map(function(c){
+//         return barGdata.map(function(d,i) {
+//           return {x:d["condition"], y:d[c]} })
+//         })
+//     var stack = d3.layout.stack()
+//     var dataset_cond = stack(stackdata)
+//     console.log(dataset_cond)
+//     classInd = 0
+//     var groups = canvas.selectAll("g")
+//                     .data(dataset_cond)
+//                     .enter()
+//                     .append("g")
+//                     .attr("class", function(d){
+//                         classInd += 1
+//                         return "barGroup"+(classInd-1).toString()
+//                     })
+//                     .style("fill", function(d, i) {
+//                         // console.log(i)
+//                         // console.log(d) 
+//                         return stachColorArr[i]})
 
-    var bar = groups.selectAll(".bar_rect")
-                    //.selectAll(".bar_rect")
-                    .data(function(d) {return d})
-                    .enter()
-                    .append("rect")
-                    .attr("class", "bar_rect")
-                    .attr("x", function(d, i) {
-                        axis_xval.push(((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)))
-                        return ((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)).toString() + "%";
-                    })
-                    .attr("y", function(d,i) {
-                        return  (barMaxHeight-((d.y0+d.y) * stackMultiplier)).toString()+"%"
-                    })
-                    .attr("height", function(d,i) {
-                        return (d.y * stackMultiplier).toString()+"%"
-                    })
-                    .attr("width", (barwidthDivider/(searchTags.length)).toString()+"%");
+//     var bar = groups.selectAll(".bar_rect")
+//                     //.selectAll(".bar_rect")
+//                     .data(function(d) {return d})
+//                     .enter()
+//                     .append("rect")
+//                     .attr("class", "bar_rect")
+//                     .attr("x", function(d, i) {
+//                         axis_xval.push(((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)))
+//                         return ((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)).toString() + "%";
+//                     })
+//                     .attr("y", function(d,i) {
+//                         return  (barMaxHeight-((d.y0+d.y) * stackMultiplier)).toString()+"%"
+//                     })
+//                     .attr("height", function(d,i) {
+//                         return (d.y * stackMultiplier).toString()+"%"
+//                     })
+//                     .attr("width", (barwidthDivider/(searchTags.length)).toString()+"%");
     
-    lineStartx = $(".barGroup0 rect:first-child").position().left
-    lineStarty = $(".barGroup0 rect:first-child").position().top
-    lineEndx = $(".barGroup0 rect:last-child").position().left
-    lineEndy = $(".barGroup0 rect:last-child").position().top
+//     lineStartx = $(".barGroup0 rect:first-child").position().left
+//     lineStarty = $(".barGroup0 rect:first-child").position().top
+//     lineEndx = $(".barGroup0 rect:last-child").position().left
+//     lineEndy = $(".barGroup0 rect:last-child").position().top
 
-    // var axis = canvas.append("g").attr("class", "axis")
-                    // .attr("transform", "translate(0," + 25 + ")")
-                    canvas.append('line')
-                        .style("stroke", "lightgreen")
-                        .style("stroke-width", 100)
-                        .attr("x1", lineStartx)
-                        .attr("y1", lineStarty)
-                        .attr("x2", lineEndx)
-                        .attr("y2", lineStarty)
+//     // var axis = canvas.append("g").attr("class", "axis")
+//                     // .attr("transform", "translate(0," + 25 + ")")
+//                     canvas.append('line')
+//                         .style("stroke", "lightgreen")
+//                         .style("stroke-width", 100)
+//                         .attr("x1", lineStartx)
+//                         .attr("y1", lineStarty)
+//                         .attr("x2", lineEndx)
+//                         .attr("y2", lineStarty)
 
 
-    // canvas.append("g")
+//     // canvas.append("g")
     
 
-    // console.log($('.classInd0'))
-    // var x = d3.scale.ordinal()
-    //                 .domain(dataset_cond[0].map(function(d) { return d.x; }))
-    //                 .range(axis_xval.map(function(d) {
-    //                     return (d).toString()+"%"
-    //                 }))
-    // console.log(x)
-    // var xAxis = d3.svg.axis().scale(x);
+//     // console.log($('.classInd0'))
+//     // var x = d3.scale.ordinal()
+//     //                 .domain(dataset_cond[0].map(function(d) { return d.x; }))
+//     //                 .range(axis_xval.map(function(d) {
+//     //                     return (d).toString()+"%"
+//     //                 }))
+//     // console.log(x)
+//     // var xAxis = d3.svg.axis().scale(x);
     
-    // var xAxis = d3.svg.axis()
-    //                 .scale(x)
-    //                 .orient("bottom")
-    //                 // .tickFormat(d3.time.format("%Y"));
-    // canvas.append("g")
-    //                 .attr("class", "x axis")
-    //                 //.attr("transform", "translate(0%," + 25 + "%)")
-    //                 .call(xAxis);
+//     // var xAxis = d3.svg.axis()
+//     //                 .scale(x)
+//     //                 .orient("bottom")
+//     //                 // .tickFormat(d3.time.format("%Y"));
+//     // canvas.append("g")
+//     //                 .attr("class", "x axis")
+//     //                 //.attr("transform", "translate(0%," + 25 + "%)")
+//     //                 .call(xAxis);
                   
-    // console.log(drug_ids)
-    // console.log(drug_names)
-}
+//     // console.log(drug_ids)
+//     // console.log(drug_names)
+// }
 
 function findCommonElements(inArrays) {
   // check for valid input
@@ -462,7 +467,7 @@ function removeSelected(my_conditions, my_searchTags) {
 
 $(document).ready(function () {
     $.ajax({
-        url: "data/webMD_part10.csv",
+        url: inputFile,
         dataType: "text",
         success: function (data) {
             datasetJson = csvJSON(data)

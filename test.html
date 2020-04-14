@@ -121,7 +121,9 @@ var rect = groups.selectAll("rect")
   .attr("y", function(d) { return y(d.y0 + d.y); })
   .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y); })
   .attr("width", x.rangeBand())
-  .on("mouseover", function() { tooltip.style("display", null); })
+  .on("mouseover", function() { 
+    console.log("aaya")  
+    tooltip.style("display", null); })
   .on("mouseout", function() { tooltip.style("display", "none"); })
   .on("mousemove", function(d) {
     var xPosition = d3.mouse(this)[0] - 15;
