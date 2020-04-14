@@ -147,28 +147,31 @@ body{
     top:100%;
     left: 50%;
     transform: translate(-50%,-50%);
-    background-color:green;
+    /* background-color:green; */
     z-index: -1;
 }
 
 .drugBoard{
     width:20%;
     height:100%;
-    background-color: red;
+    background-color: blue;
 }
 
 .graphPannel{
     width:55%;
     height:100%;
-    background-color: blue;
+    background-color: grey;
 }
 
 .NLPPannel{
     width:25%;
     height:100%;
-    background-color: red;
+    background-color: blue;
 }
 
+.bar_rect{
+    z-index:100;
+}
 .drugList{
 
 }
