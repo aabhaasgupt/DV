@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-inputFile = "data/webMD_part10.csv"
+inputFile = "data/webMD_part3.csv"
 
 conditions = []
 drugIdDict = []
@@ -50,6 +50,10 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
 
 function makeGraph(drug_ids, drug_names){
     $(".graphPannel").html('')
+    // $("rect")
+    // .off("mouseover")
+    // .off("mouseout")
+    // .off("mousemove")
     var margin = {top: 100, right: 160, bottom: 100, left: 30};
     var width = Math.max(75,$(".graphPannel").width() - margin.left - margin.right),
         height = $(".graphPannel").height() - margin.top - margin.bottom;
@@ -61,6 +65,7 @@ function makeGraph(drug_ids, drug_names){
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    
     barGdata = filterbytags_andCreateXY(drug_ids,searchTags,drugsSatisfactionDict)
     // console.log("hi")
     // console.log(barGdata)
@@ -120,7 +125,7 @@ function makeGraph(drug_ids, drug_names){
     
     var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("bottom")
+    .orient("bottom");
     // .tickFormat(d3.time.format("%Y"));
  
 
@@ -144,24 +149,7 @@ function makeGraph(drug_ids, drug_names){
         return colors[i]; });
 
 
-    // Prep the tooltip bits, initial display is hidden
-    var tooltip = svg.append("g")
-    .attr("class", "tooltip")
-    //.style("display", "none");
-        
-    tooltip.append("rect")
-    .attr("width", 30)
-    .attr("height", 20)
-    .attr("fill", "white")
-    .style("opacity", 0.5);
-
-    tooltip.append("text")
-    .attr("x", 15)
-    .attr("dy", "1.2em")
-    .style("text-anchor", "middle")
-    .attr("font-size", "12px")
-    .attr("font-weight", "bold");
-    // console.log(tooltip)
+    
 
 
     var rect = groups.selectAll("rect")
@@ -169,25 +157,30 @@ function makeGraph(drug_ids, drug_names){
     .enter()
     .append("rect")
     .attr("class", "dataRect")
-    .attr("x", function(d) { return x(d.x); })
+    .attr("x", function(d) { 
+        // console.log(x(d.x))
+        return x(d.x); 
+    })
     .attr("y", function(d) { 
         return y(d.y0 + d.y); })
     .attr("height", function(d) { 
-        console.log("yoo")
+        // console.log("yoo")
         return y(d.y0) - y(d.y0 + d.y); })
     .attr("width", x.rangeBand())
-    .on("mouseover",function() { 
-        console.log("onover")
-        tooltip.style("display", null); 
+    //////////////////////////// NEEDS WORK -> does not fire
+    .on("mouseover",function(){
+        tooltip.style("display", null)
     })
-    .on("mouseout", function() { tooltip.style("display", "none"); })
+    .on("mouseout", function(){
+        tooltip.style("display", "none")
+    })
     .on("mousemove", function(d) {
+        console.log("onmove")
         var xPosition = d3.mouse(this)[0] - 15;
         var yPosition = d3.mouse(this)[1] - 25;
         tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
         tooltip.select("text").text(d.y);
     });
-
 
     // Draw legend
     var legend = svg.selectAll(".legend")
@@ -210,9 +203,26 @@ function makeGraph(drug_ids, drug_names){
     .text(function(d, i) { 
         return drug_names[i]
     });
-
-
+    //$(".dataRect").onmouseover = console.log("nayaa")
+    // console.log($("searchbox").on('mouseover', console.log("nayaa")))// = console.log("nayaa"))
+    // Prep the tooltip bits, initial display is hidden
+    var tooltip = svg.append("g")
+    .attr("class", "tooltip")
+    .style("display", "none");
     
+    tooltip.append("rect")
+    .attr("width", 30)
+    .attr("height", 20)
+    .attr("fill", "white")
+    .style("opacity", 0.5);
+
+    tooltip.append("text")
+    .attr("x", 15)
+    .attr("dy", "1.2em")
+    .style("text-anchor", "middle")
+    .attr("font-size", "12px")
+    .attr("font-weight", "bold");
+    // console.log(tooltip)
 }
 
 // function makeGraph_old(drug_ids, drug_names){
@@ -432,7 +442,6 @@ function scoreDict(json,cond_list,key,value){
     return dict
 }
 
-
 function toDict(json,key,value){
     var dict = {};
     for (i=0;i<json.length;i++)
@@ -471,7 +480,7 @@ $(document).ready(function () {
         dataType: "text",
         success: function (data) {
             datasetJson = csvJSON(data)
-
+            
             // datasetJson = data//JSON.parse(data)
             // console.log(datasetJson)
             conditions = getColAsArray(datasetJson,"Condition");
@@ -503,17 +512,21 @@ $(document).ready(function () {
         if (data.target.value == '') {
             searchOptions = []
         }
-        
+
+        //////////////////////////// NEEDS WORK -> detached search dropdown
         searchOptions = searchOptions.map(searchOption => `<li class=searchOpt value=${searchOption}>${searchOption}</li>`)
         $(".searchList").html(!searchOptions ? '' : searchOptions.join(''));
 
         $('.searchOpt').on('click', function () {
-            $(".input").val($(this).text())
+            $(".input").val('')
             $('.searchOpt').off('click');
             $(".searchList").html('');
             searchTags.push($(this).text())
             updateSearchTags()
         });
+        // console.log($(".dataRect").on("mouseover", function(){
+        //     console.log("aaaaaaa")
+        // }))
 
     });
 
@@ -526,14 +539,14 @@ $(document).ready(function () {
         if (searchOptions.length != 0) {
             searchTags.push(currVal)
             updateSearchTags()
+            $(".input").val('')
             $('.searchOpt').off('click');
             $(".searchList").html('');
         }
     });
-    $( window ).resize(function() {
+    $(window).resize(function() {
         updateSearchTags()
-      });
-
+    });
 });
 
 

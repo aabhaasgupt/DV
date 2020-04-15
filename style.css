@@ -160,7 +160,7 @@ body{
 .graphPannel{
     width:55%;
     height:100%;
-    background-color: grey;
+    /* background-color: grey; */
 }
 
 .NLPPannel{
@@ -171,9 +171,6 @@ body{
 
 .bar_rect{
     z-index:100;
-}
-.drugList{
-
 }
 
 
