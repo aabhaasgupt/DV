@@ -195,7 +195,7 @@ function makeGraph(drug_ids, drug_names){
     .attr("x", width - 18)
     .attr("width", 18)
     .attr("height", 18)
-    .style("fill", function(d, i) {return colors.slice().reverse()[i];});
+    .style("fill", function(d, i) {return colors.slice(0,drug_ids.length).reverse()[i];});
     
     legend.append("text")
     .attr("x", width + 5)
