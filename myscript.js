@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-inputFile = "data/webMD_part10.csv"
+inputFile = "data/webMD_part3.csv"
 
 conditions = []
 drugIdDict = []
@@ -17,7 +17,8 @@ barwidthDivider = 25
 stackMultiplier = 1
 barSeparator = 5
 barMaxHeight = 80
-stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
+//stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
+var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
 
 // var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
 function filterbytags_andCreateXY(drugid,search_tags,satdict){
@@ -112,8 +113,8 @@ function makeGraph(drug_ids, drug_names){
     .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
     .range([height, 0]);
 
-    var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
-
+    //var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
+    
 
     // Define and draw axes
     var yAxis = d3.svg.axis()
@@ -185,7 +186,7 @@ function makeGraph(drug_ids, drug_names){
 
     // Draw legend
     var legend = svg.selectAll(".legend")
-    .data(colors)
+    .data(drug_ids)
     .enter().append("g")
     .attr("class", "legend")
     .attr("transform", function(d, i) { return "translate(30," + i * 19 + ")"; });
@@ -501,7 +502,10 @@ $(document).ready(function () {
             // {
             //     console.log(i,conditions[i]);
             // }
-        }
+        },
+        complete: function(){
+            $('.loadingScreen').remove();
+          }
     });
 
     $(".input").keyup(function (data) {
