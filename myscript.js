@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-inputFile = "data/webMD_part3.csv"
+inputFile = "data/webMD_part10.csv"
 
 conditions = []
 drugIdDict = []
@@ -169,13 +169,14 @@ function makeGraph(drug_ids, drug_names){
     .attr("width", x.rangeBand())
     //////////////////////////// NEEDS WORK -> does not fire
     .on("mouseover",function(){
+        // console.log("onmouseover")
         tooltip.style("display", null)
     })
     .on("mouseout", function(){
         tooltip.style("display", "none")
     })
     .on("mousemove", function(d) {
-        console.log("onmove")
+        // console.log("onmove")
         var xPosition = d3.mouse(this)[0] - 15;
         var yPosition = d3.mouse(this)[1] - 25;
         tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
@@ -322,6 +323,7 @@ function makeGraph(drug_ids, drug_names){
 // }
 
 function findCommonElements(inArrays) {
+    
   // check for valid input
   if (typeof inArrays==="undefined") return undefined;
   if (typeof inArrays[0]==="undefined") return undefined;
@@ -480,7 +482,6 @@ $(document).ready(function () {
         dataType: "text",
         success: function (data) {
             datasetJson = csvJSON(data)
-            
             // datasetJson = data//JSON.parse(data)
             // console.log(datasetJson)
             conditions = getColAsArray(datasetJson,"Condition");
