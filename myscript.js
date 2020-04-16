@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-inputFile = "data/webMD_part3.csv"
+inputFile = "data/webMD_part10.csv"
 
 conditions = []
 drugIdDict = []
