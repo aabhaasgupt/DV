@@ -4,6 +4,7 @@ searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
 inputFile = "data/webMD_part10.csv"
+hideSideEffectsOnMouseOut = false
 
 conditions = []
 drugIdDict = []
@@ -230,13 +231,22 @@ function makeGraph(drug_ids, drug_names){
 
 
     $(".drugOpt").off('mouseover')
-    $(".drugOpt").off('mouseout')
     $(".drugOpt").on('mouseover', function(){
+        
         showSideEffects($(this).text())
+        $(".drugOpt").each(function(){
+            this.setAttribute("style", null)
+        })
+        this.setAttribute("style", "opacity:1");
+        // console.log(this)
     })
-    $(".drugOpt").on('mouseout', function(){
+    if(hideSideEffectsOnMouseOut){
+        $(".drugOpt").off('mouseout')
+        $(".drugOpt").on('mouseout', function(){
         resetSideEffects()
-    })
+        this.setAttribute("style", null);
+        })
+    }
 }
 
 function resetSideEffects(){
@@ -245,7 +255,7 @@ function resetSideEffects(){
 
 function showSideEffects(drugName){
     // console.log(drugIdSidesDict[drugNameDict[drugName]])
-    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
+    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 
 }
 
