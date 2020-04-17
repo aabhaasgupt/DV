@@ -41,7 +41,7 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
                     count += rating[d]
                     sum += parseInt(d)*rating[d]
                 })
-                average = sum/count
+                average = Math.round((sum/count)*10)/10
                 //console.log(search_tags[i],average)
                 scoresbydrug[drugid[j]] = average
             }
