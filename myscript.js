@@ -54,6 +54,7 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
 
 function makeGraph(drug_ids, drug_names){
     $(".graphPannel").html('')
+    resetSideEffects()
     // $("rect")
     // .off("mouseover")
     // .off("mouseout")
@@ -229,7 +230,7 @@ function makeGraph(drug_ids, drug_names){
     .attr("font-weight", "bold");
     // console.log(tooltip)
 
-
+    
     $(".drugOpt").off('mouseover')
     $(".drugOpt").on('mouseover', function(){
         
@@ -400,6 +401,7 @@ function updateDrugsPanel(){
         makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{
+        resetSideEffects()
         $(".graphpannel").html('')
         $(".drugList").html('')
     }
