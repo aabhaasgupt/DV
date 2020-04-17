@@ -23,6 +23,7 @@ barMaxHeight = 80
 //stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
 var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
 // var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
+// try
 // var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
 function filterbytags_andCreateXY(drugid,search_tags,satdict){
     data = []
