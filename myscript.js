@@ -22,7 +22,7 @@ barSeparator = 5
 barMaxHeight = 80
 //stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
 var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
-
+// var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
 // var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
 function filterbytags_andCreateXY(drugid,search_tags,satdict){
     data = []
@@ -52,6 +52,16 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
     return data;
 }
 
+function shuffle_colors(color_arr){
+    for(let i = color_arr.length-1; i > 0; i--){
+        const j = Math.floor(Math.random() * i)
+        const temp = color_arr[i]
+        color_arr[i] = color_arr[j]
+        color_arr[j] = temp
+      }
+    return color_arr
+}
+
 function makeGraph(drug_ids, drug_names){
     $(".graphPannel").html('')
     resetSideEffects()
@@ -75,7 +85,7 @@ function makeGraph(drug_ids, drug_names){
     // console.log("hi")
     // console.log(barGdata)
     // console.log("bye")
-
+    
     var data = []
 
     for(var ob in barGdata){
@@ -88,7 +98,7 @@ function makeGraph(drug_ids, drug_names){
     }
     var parse = d3.time.format("%Y").parse;
 
-
+    
     // Transpose the data into layers
     // var dataset = d3.layout.stack()(drug_names.map(function(fruit) {
     // return data.map(function(d) {
@@ -417,7 +427,9 @@ function updateSearchTags() {
         $(".searchTags").html('');
         updateSearchTags()
     });
-
+    if (searchTags.length==0){
+        colors = shuffle_colors(colors)
+    }
     updateDrugsPanel()
 }
 
