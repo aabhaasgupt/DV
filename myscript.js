@@ -7,10 +7,12 @@ inputFile = "data/webMD_part10.csv"
 
 conditions = []
 drugIdDict = []
+drugNameDict = []
 drugsConditionDict = []
 datasetJson = null
 drugsSatisfactionDict =[]
 drugsEffectiveDict = []
+drugIdSidesDict = []
 
 //barwidth = (50/(0+searchTags.length)).toString()+"%"
 barwidthDivider = 25
@@ -225,6 +227,26 @@ function makeGraph(drug_ids, drug_names){
     .attr("font-size", "12px")
     .attr("font-weight", "bold");
     // console.log(tooltip)
+
+
+    $(".drugOpt").off('mouseover')
+    $(".drugOpt").off('mouseout')
+    $(".drugOpt").on('mouseover', function(){
+        showSideEffects($(this).text())
+    })
+    $(".drugOpt").on('mouseout', function(){
+        resetSideEffects()
+    })
+}
+
+function resetSideEffects(){
+    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText>")
+}
+
+function showSideEffects(drugName){
+    // console.log(drugIdSidesDict[drugNameDict[drugName]])
+    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
+
 }
 
 // function makeGraph_old(drug_ids, drug_names){
@@ -408,7 +430,9 @@ function csvJSON(csv){
   
         var obj = {};
         var currentline=lines[i].split("~");
-  
+        if(currentline[0]==""){
+            continue
+        }
         for(var j=0;j<headers.length;j++){
             // if(currentline[j] == "")
             // {
@@ -477,6 +501,17 @@ function removeSelected(my_conditions, my_searchTags) {
     return my_conditions.filter(x => !my_searchTags.includes(x));
 }
 
+function flatenKeyOfDict(x){
+    for(var i in x){
+        if (x[i].length > 1){
+            x[i] = [x[i].reduce(function(prev, curr) {
+                return prev.concat(curr);
+            })];
+        }
+    }
+    return x
+}
+
 $(document).ready(function () {
     $.ajax({
         url: inputFile,
@@ -486,22 +521,14 @@ $(document).ready(function () {
             // datasetJson = data//JSON.parse(data)
             // console.log(datasetJson)
             conditions = getColAsArray(datasetJson,"Condition");
-            conditions.pop()
+            //conditions.pop()
             conditions = Array.from(new Set(conditions))
             drugIdDict = toDict(datasetJson, "DrugId", "Drug")
+            drugNameDict = toDict(datasetJson, "Drug", "DrugId")
             drugsConditionDict = toDict(datasetJson, "Condition", "DrugId")
             drugsSatisfactionDict = scoreDict(datasetJson, conditions, "DrugId", "Satisfaction") 
             drugsEffectiveDict = scoreDict(datasetJson, conditions, "DrugId", "Effectiveness") 
-            // console.log(datasetJson[1])
-            // console.log(drugsSatisfactionDict)
-            // console.log(drugsEffectiveDict)
-            // console.log(drugIdDict)
-            // console.log(drugsConditionDict)
-
-            // for (i=0;i<conditions.length-1;i++)
-            // {
-            //     console.log(i,conditions[i]);
-            // }
+            drugIdSidesDict = flatenKeyOfDict(toDict(datasetJson, "DrugId", "Sides"))
         },
         complete: function(){
             $('.loadingScreen').remove();

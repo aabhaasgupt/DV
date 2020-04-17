@@ -152,7 +152,20 @@ body{
     /* z-index: -1; */
 }
 
+.boardTitle{
+    padding: 10%;
+    text-align: center;
+    color: white;
+}
+.pannelText{
+    padding: 5%;
+    font-size: 0.9em;
+    text-align: center;
+    color: white;
+}
+
 .drugBoard{
+    
     width:20%;    
     margin-left: 5px;
 }
@@ -217,3 +230,24 @@ svg {
       background-attachment: fixed;
       background-position: center;
   }
+
+.topNLP{
+    width:100%;
+    height:33%;
+    /* background-color:blue; */
+    border-radius: inherit;
+}
+
+.midNLP{
+    width:100%;
+    height:34%;
+    border-radius: inherit;
+    /* background-color:green; */
+}
+
+.bottomNLP{
+    width:100%;
+    height:33%;
+    border-radius: inherit;
+    /* background-color:blue; */
+}
