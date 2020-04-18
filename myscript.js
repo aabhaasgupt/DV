@@ -21,6 +21,7 @@ barwidthDivider = 25
 stackMultiplier = 1
 barSeparator = 5
 barMaxHeight = 80
+reviewThreshold = 0
 //stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
 var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
 // var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
@@ -162,20 +163,20 @@ function makeGraph(drug_ids, drug_names){
     .enter().append("g")
     .attr("class", "cost")
     .style("fill", function(d, i) { 
+        // console.log("group")
         // console.log(d)
         return colors[i]; });
 
 
     
-
-
     var rect = groups.selectAll("rect")
     .data(function(d) { return d; })
     .enter()
     .append("rect")
-    .attr("class", "dataRect")
-    .attr("x", function(d) { 
-        // console.log(x(d.x))
+    .attr("class", function(d,i){
+        return "dataRect~"+searchTags[i]
+    })
+    .attr("x", function(d,i) { 
         return x(d.x); 
     })
     .attr("y", function(d) { 
@@ -185,20 +186,37 @@ function makeGraph(drug_ids, drug_names){
         return y(d.y0) - y(d.y0 + d.y); })
     .attr("width", x.rangeBand())
     //////////////////////////// NEEDS WORK -> does not fire
-    .on("mouseover",function(){
-        // console.log("onmouseover")
-        tooltip.style("display", null)
-    })
-    .on("mouseout", function(){
-        tooltip.style("display", "none")
-    })
-    .on("mousemove", function(d) {
-        // console.log("onmove")
-        var xPosition = d3.mouse(this)[0] - 15;
-        var yPosition = d3.mouse(this)[1] - 25;
-        tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-        tooltip.select("text").text(d.y);
-    });
+    
+
+    drugInd = 0
+    h = -1
+    svg.selectAll("g.cost")
+            .selectAll("rect")
+                .each(function(d,i){
+                    h += 1
+                    this.setAttribute('class',this.getAttribute('class') + "~" + drug_ids[drugInd])
+                    // console.log(drugInd,this.getAttribute('class'))
+                    if(h == searchTags.length-1){
+                        drugInd += 1
+                        h = -1
+                    }
+                })
+                .on("mouseover",function(){
+                    st = this.getAttribute("class").split("~");
+                    reviewShow(st[1],st[2])
+                    tooltip.style("display", null)
+                })
+                .on("mouseout", function(){
+                    reviewHide()
+                    tooltip.style("display", "none")
+                })
+                .on("mousemove", function(d) {
+                    // console.log("onmove")
+                    var xPosition = d3.mouse(this)[0] - 15;
+                    var yPosition = d3.mouse(this)[1] - 25;
+                    tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+                    tooltip.select("text").text(d.y);
+                });
 
     // Draw legend
     var legend = svg.selectAll(".legend")
@@ -266,10 +284,18 @@ function resetSideEffects(){
     $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText>")
 }
 
+function reviewHide(){
+    $(".topNLP").html("<p class = boardTitle > Reviews</p><p class=pannelText>")
+}
+
+function reviewShow(con, drg){
+    console.log(con, drg, drugsSentimentDict[con + "~" + drg])
+    // $(".topNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
+}
+
 function showSideEffects(drugName){
     // console.log(drugIdSidesDict[drugNameDict[drugName]])
     $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
-
 }
 
 // function makeGraph_old(drug_ids, drug_names){
@@ -539,25 +565,30 @@ function flatenKeyOfDict(x){
 }
 
 function sentDict(json,cond_list,key,value){
+    // console.log(json)
     var dict = {};
-    for (i=0;i<cond_list.length;i++){
-        dict[cond_list[i]] = {}
+    xT = Object.keys(json[1]).pop()
+    for(var rec in json){
+        dict[json[rec]['Condition'] + "~" + json[rec]['DrugId']] = []
     }
-    
-    for (i=0;i<json.length;i++)
-    {   //console.log(i, json[i])
-        if (cond_list.indexOf(json[i]["Condition"]) != -1){
-            if (dict[json[i]["Condition"]][json[i][key]]==null){
-                dict[json[i]["Condition"]][json[i][key]] = []
-            }
-            if (dict[json[i]["Condition"]][json[i][key]]){
-                if (json[i][key][value] != NaN){
-                    console.log(json[i][value])
-                    dict[json[i]["Condition"]][json[i][key]].push(json[i][value]);
-                }
-            }
-        }
+    for(var rec in json){
+        dict[json[rec]['Condition'] + "~" + json[rec]['DrugId']].push(parseFloat(json[rec][xT]))
     }
+    // console.log(dict)
+    // for (i=0;i<json.length;i++)
+    // {   //console.log(i, json[i])
+    //     if (cond_list.indexOf(json[i]["Condition"]) != -1){
+    //         if (dict[json[i]["Condition"]][json[i][key]] == null){]
+    //             dict[json[i]["Condition"]][json[i][key]] = []
+    //         }
+    //         if (dict[json[i]["Condition"]][json[i][key]]){
+    //             if (json[i][key][value] != NaN){
+    //                 console.log(json[i][value])
+    //                 dict[json[i]["Condition"]][json[i][key]].push(json[i][value]);
+    //             }
+    //         }
+    //     }
+    // }
     return dict
 } 
 $(document).ready(function () {
@@ -578,7 +609,7 @@ $(document).ready(function () {
             drugsEffectiveDict = scoreDict(datasetJson, conditions, "DrugId", "Effectiveness") 
             drugIdSidesDict = flatenKeyOfDict(toDict(datasetJson, "DrugId", "Sides"))
             drugsSentimentDict = sentDict(datasetJson, conditions, "DrugId", "SentimentScore")
-            console.log(drugsSentimentDict) 
+            // console.log(drugsSentimentDict) 
         },
         // recommendation -> sorted(ease_of_use * weight1 + sattisfaction + effectiveness + normalised_useful_count + score)
         complete: function(){
