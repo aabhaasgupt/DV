@@ -38,7 +38,6 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
         scoresbydrug = {"condition":searchTags[i]}
         for(j=0; j<drugid.length; j++){
             x += 1
-            //console.log(satdict[search_tags[i]])
             rating = satdict[search_tags[i]][drugid[j]]
             if (rating){
                 sum = 0
@@ -49,13 +48,11 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
                     sum += parseInt(d)*rating[d]
                 })
                 average = Math.round((sum/count) * 10) / 10
-                //console.log(search_tags[i],average)
                 scoresbydrug[drugid[j]] = average
             }
         }
         data.push(scoresbydrug) 
     }
-    // console.log(data)
     return data;
 }
 
@@ -72,10 +69,6 @@ function shuffle_colors(color_arr){
 function makeGraph(drug_ids, drug_names){
     $(".graphPannel").html('')
     resetSideEffects()
-    // $("rect")
-    // .off("mouseover")
-    // .off("mouseout")
-    // .off("mousemove")
     var margin = {top: 100, right: 160, bottom: 100, left: 30};
     var width = Math.max(75,$(".graphPannel").width() - margin.left - margin.right),
         height = $(".graphPannel").height() - margin.top - margin.bottom;
@@ -89,9 +82,6 @@ function makeGraph(drug_ids, drug_names){
 
     
     barGdata = filterbytags_andCreateXY(drug_ids,searchTags,drugsSatisfactionDict)
-    // console.log("hi")
-    // console.log(barGdata)
-    // console.log("bye")
     
     var data = []
 
@@ -105,17 +95,6 @@ function makeGraph(drug_ids, drug_names){
     }
     var parse = d3.time.format("%Y").parse;
 
-    
-    // Transpose the data into layers
-    // var dataset = d3.layout.stack()(drug_names.map(function(fruit) {
-    // return data.map(function(d) {
-    //     return {x: parse(d.condition), y: +d[fruit]};
-    // });
-    // }));
-    
-    
-    
-    
     stackdata = drug_ids.map(function(c){
         return barGdata.map(function(d,i) {
           return {x:d["condition"], y:d[c]} })
@@ -359,112 +338,12 @@ function reviewShow(con, drg){
                     .$el(d3.select(".topNLP"))
                     .data(getData())
                     .render();
-      
-
-
-    // $(".topNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
 
 function showSideEffects(drugName){
     // console.log(drugIdSidesDict[drugNameDict[drugName]])
     $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
-
-// function makeGraph_old(drug_ids, drug_names){
-
-//     axis_xval = []
-//     $(".graphpannel").html('')
-//     var canvas = d3.select(".graphpannel").append('svg')
-//                                             .attr("height","100%")
-//                                             .attr("width", "100%")
-//                                             .attr("y","10%")
-//                                             // .style("fill","white");
-//     var rect = canvas.append('rect')
-//                         .attr("height","80%")
-//                         .attr("width", "100%")
-//                         .attr("y","10%")
-//                         .style("fill","white");
-//     barGdata = filterbytags_andCreateXY(drug_ids,searchTags,drugsSatisfactionDict)
-
-//     stackdata = drug_ids.map(function(c){
-//         return barGdata.map(function(d,i) {
-//           return {x:d["condition"], y:d[c]} })
-//         })
-//     var stack = d3.layout.stack()
-//     var dataset_cond = stack(stackdata)
-//     console.log(dataset_cond)
-//     classInd = 0
-//     var groups = canvas.selectAll("g")
-//                     .data(dataset_cond)
-//                     .enter()
-//                     .append("g")
-//                     .attr("class", function(d){
-//                         classInd += 1
-//                         return "barGroup"+(classInd-1).toString()
-//                     })
-//                     .style("fill", function(d, i) {
-//                         // console.log(i)
-//                         // console.log(d) 
-//                         return stachColorArr[i]})
-
-//     var bar = groups.selectAll(".bar_rect")
-//                     //.selectAll(".bar_rect")
-//                     .data(function(d) {return d})
-//                     .enter()
-//                     .append("rect")
-//                     .attr("class", "bar_rect")
-//                     .attr("x", function(d, i) {
-//                         axis_xval.push(((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)))
-//                         return ((i+1) * (barwidthDivider/(searchTags.length) +  barSeparator)).toString() + "%";
-//                     })
-//                     .attr("y", function(d,i) {
-//                         return  (barMaxHeight-((d.y0+d.y) * stackMultiplier)).toString()+"%"
-//                     })
-//                     .attr("height", function(d,i) {
-//                         return (d.y * stackMultiplier).toString()+"%"
-//                     })
-//                     .attr("width", (barwidthDivider/(searchTags.length)).toString()+"%");
-    
-//     lineStartx = $(".barGroup0 rect:first-child").position().left
-//     lineStarty = $(".barGroup0 rect:first-child").position().top
-//     lineEndx = $(".barGroup0 rect:last-child").position().left
-//     lineEndy = $(".barGroup0 rect:last-child").position().top
-
-//     // var axis = canvas.append("g").attr("class", "axis")
-//                     // .attr("transform", "translate(0," + 25 + ")")
-//                     canvas.append('line')
-//                         .style("stroke", "lightgreen")
-//                         .style("stroke-width", 100)
-//                         .attr("x1", lineStartx)
-//                         .attr("y1", lineStarty)
-//                         .attr("x2", lineEndx)
-//                         .attr("y2", lineStarty)
-
-
-//     // canvas.append("g")
-    
-
-//     // console.log($('.classInd0'))
-//     // var x = d3.scale.ordinal()
-//     //                 .domain(dataset_cond[0].map(function(d) { return d.x; }))
-//     //                 .range(axis_xval.map(function(d) {
-//     //                     return (d).toString()+"%"
-//     //                 }))
-//     // console.log(x)
-//     // var xAxis = d3.svg.axis().scale(x);
-    
-//     // var xAxis = d3.svg.axis()
-//     //                 .scale(x)
-//     //                 .orient("bottom")
-//     //                 // .tickFormat(d3.time.format("%Y"));
-//     // canvas.append("g")
-//     //                 .attr("class", "x axis")
-//     //                 //.attr("transform", "translate(0%," + 25 + "%)")
-//     //                 .call(xAxis);
-                  
-//     // console.log(drug_ids)
-//     // console.log(drug_names)
-// }
 
 function findCommonElements(inArrays) {
     
@@ -519,6 +398,7 @@ function updateDrugsPanel(){
         makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{
+        reviewHide()
         resetSideEffects()
         $(".graphpannel").html('')
         $(".drugList").html('')
@@ -526,11 +406,9 @@ function updateDrugsPanel(){
 }
 
 function updateSearchTags() {
-    // tempTags = searchTags.map(searchTag => `<div class=aSearchTag><div class="searchText">${searchTag}</div><div class="tagCross"><i class="fas fa-times crossFas"></i></div></div>`)
     tempTags = searchTags.map(searchTag => `<div class=aSearchTag>${searchTag}</div>`)
     $(".searchTags").html(!tempTags ? '' : tempTags.join(''));
     $('.aSearchTag').on('click', function () {
-        // console.log($(this).text());
         searchTags = searchTags.filter(searchTag => searchTag != $(this).text());
         $(".searchTags").html('');
         updateSearchTags()
@@ -645,7 +523,6 @@ function flatenKeyOfDict(x){
 }
 
 function sentDict(json,cond_list,key,value){
-    // console.log(json)
     var dict = {};
     xT = Object.keys(json[1]).pop()
     for(var rec in json){
@@ -654,26 +531,10 @@ function sentDict(json,cond_list,key,value){
     for(var rec in json){
         dict[json[rec]['Condition'] + "~" + json[rec]['DrugId']].push(parseFloat(json[rec][xT]))
     }
-    // console.log(dict)
-    // for (i=0;i<json.length;i++)
-    // {   //console.log(i, json[i])
-    //     if (cond_list.indexOf(json[i]["Condition"]) != -1){
-    //         if (dict[json[i]["Condition"]][json[i][key]] == null){]
-    //             dict[json[i]["Condition"]][json[i][key]] = []
-    //         }
-    //         if (dict[json[i]["Condition"]][json[i][key]]){
-    //             if (json[i][key][value] != NaN){
-    //                 console.log(json[i][value])
-    //                 dict[json[i]["Condition"]][json[i][key]].push(json[i][value]);
-    //             }
-    //         }
-    //     }
-    // }
     return dict
 }
 
 function EffDict(json,cond_list,key,value){
-    // console.log(json)
     var dict = {};
     
     for(var rec in json){
