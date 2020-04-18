@@ -672,6 +672,20 @@ function sentDict(json,cond_list,key,value){
     return dict
 }
 
+function EffDict(json,cond_list,key,value){
+    // console.log(json)
+    var dict = {};
+    
+    for(var rec in json){
+        dict[json[rec]['Condition'] + "~" + json[rec]['DrugId']+ "~" + json[rec]['Age']] = []
+    }
+    for(var rec in json){
+        dict[json[rec]['Condition'] + "~" + json[rec]['DrugId']+ "~" + json[rec]['Age']].push(parseFloat(json[rec][value]))
+    }
+
+    return dict
+}
+
 $(document).ready(function () {
     $.ajax({
         url: inputFile,
@@ -687,10 +701,10 @@ $(document).ready(function () {
             drugNameDict = toDict(datasetJson, "Drug", "DrugId")
             drugsConditionDict = toDict(datasetJson, "Condition", "DrugId")
             drugsSatisfactionDict = scoreDict(datasetJson, conditions, "DrugId", "Satisfaction") 
-            drugsEffectiveDict = scoreDict(datasetJson, conditions, "DrugId", "Effectiveness") 
             drugIdSidesDict = flatenKeyOfDict(toDict(datasetJson, "DrugId", "Sides"))
             drugsSentimentDict = sentDict(datasetJson, conditions, "DrugId", "SentimentScore")
-            // console.log(drugsSentimentDict) 
+            drugsEffectiveDict = EffDict(datasetJson, conditions, "DrugId", "Effectiveness")
+            //console.log(drugsEffectiveDict) 
         },
         // recommendation -> sorted(ease_of_use * weight1 + sattisfaction + effectiveness + normalised_useful_count + score)
         complete: function(){
