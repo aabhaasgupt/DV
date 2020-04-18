@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+}
+</style>
+<body>
+  <button id="refresh">Refresh Data</button>
+  <div id="chart"></div>
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="donut.js"></script>
+<script>
+
+var getData = function(){
+  var size = 3;
+  var data = {};
+  var text = "";
+  for(var i=0; i<size; i++){
+    data["data-"+(i+1)] = Math.round(Math.random() * 100);
+    text += "data-"+ (i+1) +" = " + data["data-"+(i+1)] + "<br/>";
+  };
+  d3.select("#data").html(text);
+  return data;
+};
+
+var chart = donut()
+              .$el(d3.select("#chart"))
+              .data(getData())
+              .render();
+
+
+d3.select("#refresh").on("click", function(){
+  chart.data(getData()).render();
+});
+
+</script>

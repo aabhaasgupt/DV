@@ -5,6 +5,7 @@ drugPanelIds = []
 drugPanelDrugs = []
 inputFile = "data/webMDver1.csv"
 hideSideEffectsOnMouseOut = false
+hideReviewsOnMouseOut = false
 
 conditions = []
 drugIdDict = []
@@ -21,7 +22,9 @@ barwidthDivider = 25
 stackMultiplier = 1
 barSeparator = 5
 barMaxHeight = 80
-reviewThreshold = 0
+
+reviewThresholdNeutralStart = -0.2
+reviewThresholdPositiveStart = 0
 //stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
 var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
 // var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
@@ -207,7 +210,9 @@ function makeGraph(drug_ids, drug_names){
                     tooltip.style("display", null)
                 })
                 .on("mouseout", function(){
-                    reviewHide()
+                    if(hideReviewsOnMouseOut){
+                        reviewHide()
+                    }
                     tooltip.style("display", "none")
                 })
                 .on("mousemove", function(d) {
@@ -281,15 +286,60 @@ function makeGraph(drug_ids, drug_names){
 }
 
 function resetSideEffects(){
-    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText>")
+    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText></p>")
 }
 
 function reviewHide(){
-    $(".topNLP").html("<p class = boardTitle > Reviews</p><p class=pannelText>")
+    // $(".topNLP").html("<p class = boardTitle > Reviews</p>")
+    $(".topNLP").html("")
 }
 
 function reviewShow(con, drg){
-    console.log(con, drg, drugsSentimentDict[con + "~" + drg])
+    //console.log(con, drg, drugsSentimentDict[con + "~" + drg])
+    $(".topNLP").html("")
+    sentimentList = drugsSentimentDict[con + "~" + drg]
+    positiveCount = 0
+    negativeCount = 0
+    neutralCount = 0
+    for (var item in sentimentList){
+        if(sentimentList[item] >= reviewThresholdPositiveStart){
+            positiveCount += 1
+        }
+        else if(sentimentList[item] >= reviewThresholdNeutralStart){
+            neutralCount += 1
+        }
+        else{
+            negativeCount += 1
+        }
+    }
+    sentimentListCounts = [positiveCount,neutralCount,negativeCount]
+    console.log(sentimentList)
+    console.log(sentimentListCounts)
+    var margin = {top: 0, right: 0, bottom: 0, left: 0};
+    var width = Math.max(75,$(".topNLP").width() - margin.left - margin.right),
+        height = $(".topNLP").height() - margin.top - margin.bottom;
+
+
+    var getData = function(){
+        var size = 3;
+        var data = {};
+        var text = "";
+        for(var i=0; i<size; i++){
+          data[["+ve","+-ve","-ve"][i]] = sentimentListCounts[i]
+          text += ["+ve","+-ve","-ve"][i] +" = " + data[["+ve","+-ve","-ve"][i]] + "<br/>";
+        };
+        d3.select("#data").html(text);
+        console.log(data)
+        return data;
+      };
+      
+      var chart = donut(width, height)
+                    .$el(d3.select(".topNLP"))
+                    .data(getData())
+                    .render();
+      
+
+
     // $(".topNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
 
@@ -590,7 +640,8 @@ function sentDict(json,cond_list,key,value){
     //     }
     // }
     return dict
-} 
+}
+
 $(document).ready(function () {
     $.ajax({
         url: inputFile,
