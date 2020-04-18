@@ -3,7 +3,7 @@ searchTop = 0
 searchTags = []
 drugPanelIds = []
 drugPanelDrugs = []
-inputFile = "data/webMD_part10.csv"
+inputFile = "data/webMDver1.csv"
 hideSideEffectsOnMouseOut = false
 
 conditions = []
@@ -14,6 +14,7 @@ datasetJson = null
 drugsSatisfactionDict =[]
 drugsEffectiveDict = []
 drugIdSidesDict = []
+drugsSentimentDict =[]
 
 //barwidth = (50/(0+searchTags.length)).toString()+"%"
 barwidthDivider = 25
@@ -537,6 +538,28 @@ function flatenKeyOfDict(x){
     return x
 }
 
+function sentDict(json,cond_list,key,value){
+    var dict = {};
+    for (i=0;i<cond_list.length;i++){
+        dict[cond_list[i]] = {}
+    }
+    
+    for (i=0;i<json.length;i++)
+    {   //console.log(i, json[i])
+        if (cond_list.indexOf(json[i]["Condition"]) != -1){
+            if (dict[json[i]["Condition"]][json[i][key]]==null){
+                dict[json[i]["Condition"]][json[i][key]] = []
+            }
+            if (dict[json[i]["Condition"]][json[i][key]]){
+                if (json[i][key][value] != NaN){
+                    console.log(json[i][value])
+                    dict[json[i]["Condition"]][json[i][key]].push(json[i][value]);
+                }
+            }
+        }
+    }
+    return dict
+} 
 $(document).ready(function () {
     $.ajax({
         url: inputFile,
@@ -554,7 +577,10 @@ $(document).ready(function () {
             drugsSatisfactionDict = scoreDict(datasetJson, conditions, "DrugId", "Satisfaction") 
             drugsEffectiveDict = scoreDict(datasetJson, conditions, "DrugId", "Effectiveness") 
             drugIdSidesDict = flatenKeyOfDict(toDict(datasetJson, "DrugId", "Sides"))
+            drugsSentimentDict = sentDict(datasetJson, conditions, "DrugId", "SentimentScore")
+            console.log(drugsSentimentDict) 
         },
+        // recommendation -> sorted(ease_of_use * weight1 + sattisfaction + effectiveness + normalised_useful_count + score)
         complete: function(){
             $('.loadingScreen').remove();
           }
