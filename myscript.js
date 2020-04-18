@@ -30,6 +30,7 @@ var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E
 // var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
 // try
 // var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
+
 function filterbytags_andCreateXY(drugid,search_tags,satdict){
     data = []
     x = 0
@@ -197,7 +198,7 @@ function makeGraph(drug_ids, drug_names){
             .selectAll("rect")
                 .each(function(d,i){
                     h += 1
-                    this.setAttribute('class',this.getAttribute('class') + "~" + drug_ids[drugInd])
+                    this.setAttribute('class',this.getAttribute('class') + "~" + drug_ids[drug_ids.length -1 - drugInd])
                     // console.log(drugInd,this.getAttribute('class'))
                     if(h == searchTags.length-1){
                         drugInd += 1
@@ -208,10 +209,19 @@ function makeGraph(drug_ids, drug_names){
                     st = this.getAttribute("class").split("~");
                     reviewShow(st[1],st[2])
                     tooltip.style("display", null)
+                    showSideEffects(drugIdDict[st[2]])
+                    $(".drugOpt")
+                        .each(function(){
+                            this.setAttribute("style", null);
+                        })
                 })
                 .on("mouseout", function(){
                     if(hideReviewsOnMouseOut){
                         reviewHide()
+                    }
+                    
+                    if(hideSideEffectsOnMouseOut){
+                        resetSideEffects()
                     }
                     tooltip.style("display", "none")
                 })
@@ -325,8 +335,8 @@ function reviewShow(con, drg){
         }
     }
     
-    console.log(sentimentListCounts)
-    console.log(signs)
+    // console.log(sentimentListCounts)
+    // console.log(signs)
     var margin = {top: 0, right: 0, bottom: 0, left: 0};
     var width = Math.max(75,$(".topNLP").width() - margin.left - margin.right),
         height = $(".topNLP").height() - margin.top - margin.bottom;
@@ -341,7 +351,7 @@ function reviewShow(con, drg){
           text += signs[i] +" = " + data[signs[i]] + "<br/>";
         };
         d3.select("#data").html(text);
-        console.log(data)
+        // console.log(data)
         return data;
       };
       
@@ -497,7 +507,15 @@ function updateDrugsPanel(){
     if(drugPanelIds != null){
         drugPanelDrugs = drugPanelIds.map(drugPanelId => drugIdDict[drugPanelId])
         drugsList = drugPanelDrugs.map(drug => `<li class=drugOpt value=${drug}>${drug}</li>`)
-        $(".drugList").html(!drugsList ? '' : drugsList.join(''));
+
+        blah = drugsList.join('')
+        if(!drugsList){
+            $(".drugList").html('')
+        }
+        else{
+            $(".drugList").html(blah)
+        }
+        //$(".drugList").html(!drugsList ? '' : drugsList.join(''));
         makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{

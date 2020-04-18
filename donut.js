@@ -55,7 +55,7 @@ function donut(width, height){
             .style("font-size", radius/2.5+"px");
   
         g.on("mouseover", function(obj){
-          console.log(obj)
+          // console.log(obj)
           svg.select("text.text-tooltip")
           .attr("fill", function(d) { return color(obj.data.key); })
           .text(function(d){
