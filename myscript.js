@@ -296,7 +296,9 @@ function reviewHide(){
 
 function reviewShow(con, drg){
     //console.log(con, drg, drugsSentimentDict[con + "~" + drg])
-    $(".topNLP").html("")
+    $(".topNLP").html("<p class = boardSubtitle>Condition: " + con + "</p>"+"<p class = boardSubtitle>Drug: " + drugIdDict[drg] + "</p>")
+
+    // $(".topNLP").html("")
     sentimentList = drugsSentimentDict[con + "~" + drg]
     positiveCount = 0
     negativeCount = 0
@@ -312,21 +314,31 @@ function reviewShow(con, drg){
             negativeCount += 1
         }
     }
-    sentimentListCounts = [positiveCount,neutralCount,negativeCount]
-    console.log(sentimentList)
+    tempSentimentListCounts = [positiveCount,neutralCount,negativeCount]
+    sentimentListCounts = []
+    tempSigns = ["+ve","+-ve","-ve"]
+    signs = []
+    for(var i=0;i<tempSentimentListCounts.length;i++){
+        if(tempSentimentListCounts[i]>0){
+            sentimentListCounts.push(tempSentimentListCounts[i])
+            signs.push(tempSigns[i])
+        }
+    }
+    
     console.log(sentimentListCounts)
+    console.log(signs)
     var margin = {top: 0, right: 0, bottom: 0, left: 0};
     var width = Math.max(75,$(".topNLP").width() - margin.left - margin.right),
         height = $(".topNLP").height() - margin.top - margin.bottom;
 
 
     var getData = function(){
-        var size = 3;
+        var size = sentimentListCounts.length;
         var data = {};
         var text = "";
         for(var i=0; i<size; i++){
-          data[["+ve","+-ve","-ve"][i]] = sentimentListCounts[i]
-          text += ["+ve","+-ve","-ve"][i] +" = " + data[["+ve","+-ve","-ve"][i]] + "<br/>";
+          data[signs[i]] = sentimentListCounts[i]
+          text += signs[i] +" = " + data[signs[i]] + "<br/>";
         };
         d3.select("#data").html(text);
         console.log(data)
