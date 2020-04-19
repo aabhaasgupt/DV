@@ -212,7 +212,7 @@ body{
 
 
 svg {
-    font: 10px sans-serif;
+    font-size: 0.8em;
     shape-rendering: crispEdges;
   }
 
@@ -266,4 +266,25 @@ svg {
     height:33%;
     border-radius: 0px 0px 0px 5px;
     /* background-color:blue; */
+}
+
+
+
+
+.HBCbar {
+    fill: #1d328f;
+}
+
+.HBCaxis {
+    font-size: 0.8em;
+}
+
+.HBCaxis path,
+.HBCaxis line {
+    fill: none;
+    display: none;
+}
+
+.HBClabel {    
+    font-size: 0.8em;
 }

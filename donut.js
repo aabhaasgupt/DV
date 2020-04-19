@@ -3,7 +3,7 @@ function donut(width, height){
     var $el = d3.select("body")
     var data = {};
     // var showTitle = true;
-    var radius = Math.min(width, height) / 2;
+    var radius = Math.min(width, height) / 3;
   
     var currentVal;
     var color = d3.scale.category20();
