@@ -353,6 +353,10 @@ function resetAgeEffectiveness(){
     $(".midNLP").html('')
 }
 
+function sortDataByAge(unsortedData){
+    return unsortedData
+}
+
 function showAgeEffectiveness(con,drg){
     
     resetAgeEffectiveness() 
@@ -382,6 +386,8 @@ function showAgeEffectiveness(con,drg){
             curD['value'] = Number(curD['value'].slice(0, (curD['value'].indexOf("."))+3))
             data.push(curD)
     }
+    data = sortDataByAge(data)
+
     var svg = d3.select(".midNLP").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
