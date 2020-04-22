@@ -7,6 +7,12 @@ inputFile = "data/webMDver2.csv"
 hideSideEffectsOnMouseOut = false
 hideReviewsOnMouseOut = false
 hideageEffectivenessOnMouseOut = false
+allowShuffle = false
+drugLimit = 8
+drugOptOpacity = "0.8"
+recommendationColor = "yellow"
+recommendationBorderColor = "yellow";
+recommendationBorderWidth = "5px";
 
 conditions = []
 drugIdDict = []
@@ -17,7 +23,7 @@ drugsSatisfactionDict =[]
 drugsEffectiveDict = []
 drugIdSidesDict = []
 drugsSentimentDict =[]
-
+drugRecVals = []
 //barwidth = (50/(0+searchTags.length)).toString()+"%"
 barwidthDivider = 25
 stackMultiplier = 1
@@ -27,10 +33,35 @@ barMaxHeight = 80
 reviewThresholdNeutralStart = -0.2
 reviewThresholdPositiveStart = 0
 //stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
-var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
-// var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
+// var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
+var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
 // try
 // var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
+function arrSum(arr){
+    tot = 0
+    for(var i in arr){
+        if($.type(arr[i]) === "string"){
+            tot += parseInt(arr[i])
+        }    
+        else{
+            tot += arr[i]
+        }
+    }
+    return tot
+}
+
+function arrAvg(arr){
+    tot = 0
+    for(var i in arr){
+        if($.type(arr[i]) === "string"){
+            tot += parseInt(arr[i])
+        }    
+        else{
+            tot += arr[i]
+        }
+    }
+    return tot/arr.length
+}
 
 function filterbytags_andCreateXY(drugid,search_tags,satdict){
     data = []
@@ -58,12 +89,14 @@ function filterbytags_andCreateXY(drugid,search_tags,satdict){
 }
 
 function shuffle_colors(color_arr){
-    for(let i = color_arr.length-1; i > 0; i--){
-        const j = Math.floor(Math.random() * i)
-        const temp = color_arr[i]
-        color_arr[i] = color_arr[j]
-        color_arr[j] = temp
-      }
+    if(allowShuffle){  
+        for(let i = color_arr.length-1; i > 0; i--){
+            const j = Math.floor(Math.random() * i)
+            const temp = color_arr[i]
+            color_arr[i] = color_arr[j]
+            color_arr[j] = temp
+        }
+    }
     return color_arr
 }
 
@@ -192,7 +225,7 @@ function makeGraph(drug_ids, drug_names){
                     showSideEffects(drugIdDict[st[2]])
                     $(".drugOpt")
                         .each(function(){
-                            this.setAttribute("style", null);
+                            $(this).css("opacity",drugOptOpacity);
                         })
                 })
                 .on("mouseout", function(){
@@ -263,18 +296,79 @@ function makeGraph(drug_ids, drug_names){
         
         showSideEffects($(this).text())
         $(".drugOpt").each(function(){
-            this.setAttribute("style", null)
+            $(this).css("opacity",drugOptOpacity);
         })
-        this.setAttribute("style", "opacity:1");
+        $(this).css("opacity","1");
         // console.log(this)
     })
     if(hideSideEffectsOnMouseOut){
         $(".drugOpt").off('mouseout')
         $(".drugOpt").on('mouseout', function(){
         resetSideEffects()
-        this.setAttribute("style", null);
+        $(this).css("opacity",drugOptOpacity);
         })
     }
+
+    $(".drugOpt").each(function(d){
+        if(drugIdDict[drugPanelIds[0]] == $(this).text())
+            {
+                $(this).css("border-style", "solid")
+                $(this).css("border-color", recommendationBorderColor)
+                $(this).css("border-width", recommendationBorderWidth)
+                $(this).css("color", recommendationColor)
+            }
+    })
+}
+
+function calRecommendationVal(conds,drg){
+    effVal = 0
+    satVal = 0
+    sentVal = 0
+    // console.log(conds)
+    for(var con in conds){
+        // console.log(conds[con],drg)
+        // console.log(arrSum(drugsSentimentDict[conds[con]+"~"+drg]))
+        sentVal += arrSum(drugsSentimentDict[conds[con]+"~"+drg])
+        // console.log("Sentiment", drugsSentimentDict[conds[con]+"~"+drg], "sentVal" ,sentVal)
+
+        for(var i in drugsEffectiveDict[conds[con]+"~"+drg]){
+            effVal += arrAvg(drugsEffectiveDict[conds[con]+"~"+drg][i])
+        }
+        // console.log("Effective", drugsEffectiveDict[conds[con]+"~"+drg], "effVal" ,effVal)
+
+        for(var i in drugsSatisfactionDict[conds[con]][drg]){
+            satVal += (i/10) * drugsSatisfactionDict[conds[con]][drg][i]
+        }
+        // console.log("Satisfaction", drugsSatisfactionDict[conds[con]][drg], "satVal" ,satVal)
+    }
+    return effVal+satVal+sentVal
+}
+
+function getRecommendationSorted(Symptoms,Drugs,N){
+    drugs = []
+    vals = []
+    maxInd = 0
+    for(var drg in Drugs){
+        curVal = calRecommendationVal(Symptoms,Drugs[drg])
+        curVal = curVal.toString(); //If it's not already a String
+        curVal = curVal.slice(0, (curVal.indexOf("."))+3); //With 3 exposing the hundredths place
+        drugs.push([Drugs[drg],Number(curVal)]) 
+        vals.push(Number(curVal))
+    }
+
+    transformation = []
+    for(i=0;i<drugs.length;i++){
+        maxI = vals.indexOf(Math.max(...vals));
+        transformation.push(maxI)
+        vals[maxI] = -1000000//.splice(maxI, 1);
+    }
+
+    finalDrugs = []
+    for(i=0;i<transformation.length;i++){
+        finalDrugs.push(drugs[transformation[i]])
+    }
+    drugRecVals = finalDrugs
+    return finalDrugs.slice(0, N);
 }
 
 function resetSideEffects(){
@@ -353,6 +447,7 @@ function resetAgeEffectiveness(){
     $(".midNLP").html('')
 }
 
+////////////////// TODO
 function sortDataByAge(unsortedData){
     return unsortedData
 }
@@ -485,9 +580,13 @@ function updateDrugsPanel(){
     for(i=0;i<searchTags.length;i++){
         conditions_with_common_drugs.push(drugsConditionDict[searchTags[i]])
     }
-    
     drugPanelIds = findCommonElements(conditions_with_common_drugs);
-    
+    newDrugs = getRecommendationSorted(searchTags,drugPanelIds,drugLimit)
+    drugPanelIds = []
+    for(i=0;i<newDrugs.length;i++){
+        drugPanelIds.push(newDrugs[i][0])
+    }
+
     if(drugPanelIds != null){
         drugPanelDrugs = drugPanelIds.map(drugPanelId => drugIdDict[drugPanelId])
         drugsList = drugPanelDrugs.map(drug => `<li class=drugOpt value=${drug}>${drug}</li>`)
