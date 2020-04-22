@@ -219,10 +219,10 @@ function makeGraph(drug_ids, drug_names){
                     }
                 })
                 .on("mouseover",function(){
-                    st = this.getAttribute("class").split("~");
-                    reviewShow(st[1],st[2])
+                    stt = this.getAttribute("class").split("~");
+                    reviewShow(stt[1],stt[2])
                     tooltip.style("display", null)
-                    showSideEffects(drugIdDict[st[2]])
+                    showSideEffects(drugIdDict[stt[2]])
                     $(".drugOpt")
                         .each(function(){
                             $(this).css("opacity",drugOptOpacity);
@@ -439,7 +439,8 @@ function reviewShow(con, drg){
 }
 
 function showSideEffects(drugName){
-    // console.log(drugIdSidesDict[drugNameDict[drugName]])
+    // console.log(drugIdSidesDict[drugNameDict[drugName]]
+    // console.log(drugName)
     $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
 
@@ -447,9 +448,24 @@ function resetAgeEffectiveness(){
     $(".midNLP").html('')
 }
 
-////////////////// TODO
 function sortDataByAge(unsortedData){
-    return unsortedData
+    newD = []
+    for(i=0;i<unsortedData.length;i++){
+        newD.push(unsortedData[i]['name'] + "~" + (unsortedData[i]['value']).toString())
+    }
+    newD = newD.sort()
+    newD = newD.reverse()
+    
+    sortedData = []
+
+    for(i=0;i<newD.length;i++){
+        temp = {}
+        st = newD[i].split("~")
+        temp['name'] = st[0]
+        temp['value'] = st[1]
+        sortedData.push(temp)
+    }
+    return sortedData
 }
 
 function showAgeEffectiveness(con,drg){
@@ -602,12 +618,17 @@ function updateDrugsPanel(){
         makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{
-        reviewHide()
-        resetSideEffects()
-        resetAgeEffectiveness()
+        
         $(".graphpannel").html('')
         $(".drugList").html('')
     }
+}
+
+function resetRightPanel(top,mid,bottom){
+    if(top) reviewHide();
+    if(mid) resetAgeEffectiveness();
+    if(bottom) resetSideEffects();
+    
 }
 
 function updateSearchTags() {
@@ -621,6 +642,7 @@ function updateSearchTags() {
     if (searchTags.length==0){
         colors = shuffle_colors(colors)
     }
+    resetRightPanel(true,true,true)
     updateDrugsPanel()
 }
 

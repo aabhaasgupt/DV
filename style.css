@@ -281,6 +281,9 @@ svg {
 
 .HBCbar {
     fill: #1d328f;
+    stroke:pink;
+    stroke-width:2px;
+    stroke-opacity:0.9;
 }
 
 .HBCaxis {
@@ -292,7 +295,11 @@ svg {
     fill: none;
     display: none;
 }
+.HBCaxis text{
+    fill: white;
+  }  
 
 .HBClabel {    
     font-size: 0.8em;
+    fill:white;
 }
