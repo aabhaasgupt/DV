@@ -7,7 +7,7 @@ function donut(width, height){
   
     var currentVal;
     var color = d3.scale.category20();
-    var col = {"L":"#E8EC67","N":"#F7F7FF","D":"#435058"}
+    var col = {"L":"#FFFFBF","N":"#F7F7FF","D":"#435058"}
     var pie = d3.layout.pie()
       .sort(null)
       .value(function(d) { return d.value; });

@@ -399,13 +399,14 @@ function showSideEffects(drugName){
 }
 
 function reviewHide(){
-    // $(".topNLP").html("<p class = boardTitle > Reviews</p>")
+    $(".topNLPConHeader").html("")
     $(".topNLP").html("")
 }
 
 function reviewShow(con, drg){
     //console.log(con, drg, drugsSentimentDict[con + "~" + drg])
-    $(".topNLP").html("<p class = boardSubtitle>Condition: " + con + "</p>")
+    $(".topNLPConHeader").html("<p class = boardTitle>Condition: " + con + "</p>")
+    $(".topNLP").html("")
 
     // $(".topNLP").html("")
     sentimentList = drugsSentimentDict[con + "~" + drg]
@@ -460,7 +461,6 @@ function reviewShow(con, drg){
                     .render();
     showAgeEffectiveness(con,drg)
 }
-
 
 function resetAgeEffectiveness(){
     $(".midNLP").html('')
