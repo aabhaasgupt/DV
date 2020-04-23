@@ -109,7 +109,7 @@
     padding:10px;
     color:white;
     background: rgba(0,0,0);
-    opacity:0.8;
+    opacity:0.7;
     border-radius: 10px;
     display:flex;
 }
@@ -155,7 +155,7 @@ body{
 }
 
 .boardTitle{
-    padding: 10%;
+    padding: 5%;
     text-align: center;
     color: white;
 }
@@ -248,10 +248,16 @@ svg {
     border-style: none none none solid;
     border-width: 4px;
   }
+
+  .topNLPHeader,.topNLPHeader,.topNLPHeader{
+    width:100%;
+    height:5%;
+  }
+
 .topNLP{
     border-color: blue;
     width:100%;
-    height:33%;
+    height:30%;
     padding:4%;
     /* background-color:blue; */
     border-radius: inherit;
@@ -261,7 +267,7 @@ svg {
 .midNLP{
     border-color: rgb(58, 29, 112);
     width:100%;
-    height:34%;
+    height:30%;
     border-radius: inherit;
     /* background-color:green; */
 }
@@ -271,7 +277,7 @@ svg {
     border-width: 4px;
     border-color: blue;
     width:100%;
-    height:33%;
+    height:15%;
     border-radius: 0px 0px 0px 5px;
     /* background-color:blue; */
 }
@@ -280,9 +286,9 @@ svg {
 
 
 .HBCbar {
-    fill: #1d328f;
-    stroke:pink;
-    stroke-width:2px;
+    fill: #FFFFBF;
+    stroke:#B6B486;
+    stroke-width:1px;
     stroke-opacity:0.9;
 }
 

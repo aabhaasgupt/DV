@@ -7,9 +7,10 @@ inputFile = "data/webMDver2.csv"
 hideSideEffectsOnMouseOut = false
 hideReviewsOnMouseOut = false
 hideageEffectivenessOnMouseOut = false
+sowSideEffectsOnDrugHover = false
 allowShuffle = false
 drugLimit = 8
-drugOptOpacity = "0.8"
+drugOptOpacity = "0.7"
 recommendationColor = "yellow"
 recommendationBorderColor = "yellow";
 recommendationBorderWidth = "5px";
@@ -222,10 +223,22 @@ function makeGraph(drug_ids, drug_names){
                     stt = this.getAttribute("class").split("~");
                     reviewShow(stt[1],stt[2])
                     tooltip.style("display", null)
+                    
                     showSideEffects(drugIdDict[stt[2]])
                     $(".drugOpt")
                         .each(function(){
-                            $(this).css("opacity",drugOptOpacity);
+                            // drugIdDict[stt[2]]
+                            if(drugIdDict[stt[2]] == $(this).text()){
+                                $(this).css("opacity","1");
+                                $(this).css("background-color","white");
+                                $(this).css("color","black");
+                                
+                            }
+                            else{
+                                $(this).css("opacity",drugOptOpacity);
+                                $(this).css("background-color","black");
+                                $(this).css("color","white");
+                            }
                         })
                 })
                 .on("mouseout", function(){
@@ -293,21 +306,24 @@ function makeGraph(drug_ids, drug_names){
     
     $(".drugOpt").off('mouseover')
     $(".drugOpt").on('mouseover', function(){
-        
-        showSideEffects($(this).text())
-        $(".drugOpt").each(function(){
-            $(this).css("opacity",drugOptOpacity);
-        })
-        $(this).css("opacity","1");
+        if(sowSideEffectsOnDrugHover){
+            showSideEffects($(this).text())
+        }
+        // $(".drugOpt").each(function(){
+        //     $(this).css("opacity",drugOptOpacity);
+        // })
+        // $(this).css("opacity","1");
         // console.log(this)
     })
-    if(hideSideEffectsOnMouseOut){
-        $(".drugOpt").off('mouseout')
-        $(".drugOpt").on('mouseout', function(){
-        resetSideEffects()
-        $(this).css("opacity",drugOptOpacity);
-        })
-    }
+
+    
+    $(".drugOpt").off('mouseout')
+    $(".drugOpt").on('mouseout', function(){
+        if(hideSideEffectsOnMouseOut){
+            resetSideEffects()
+        }
+        // $(this).css("opacity",drugOptOpacity);
+    })
 
     $(".drugOpt").each(function(d){
         if(drugIdDict[drugPanelIds[0]] == $(this).text())
@@ -372,7 +388,14 @@ function getRecommendationSorted(Symptoms,Drugs,N){
 }
 
 function resetSideEffects(){
-    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText></p>")
+    // $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText></p>")
+    $(".bottomNLP").html("")
+}
+
+function showSideEffects(drugName){
+    // console.log(drugIdSidesDict[drugNameDict[drugName]]
+    // console.log(drugName)
+    $(".bottomNLP").html("<p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
 
 function reviewHide(){
@@ -382,7 +405,7 @@ function reviewHide(){
 
 function reviewShow(con, drg){
     //console.log(con, drg, drugsSentimentDict[con + "~" + drg])
-    $(".topNLP").html("<p class = boardSubtitle>Condition: " + con + "</p>"+"<p class = boardSubtitle>Drug: " + drugIdDict[drg] + "</p>")
+    $(".topNLP").html("<p class = boardSubtitle>Condition: " + con + "</p>")
 
     // $(".topNLP").html("")
     sentimentList = drugsSentimentDict[con + "~" + drg]
@@ -402,7 +425,7 @@ function reviewShow(con, drg){
     }
     tempSentimentListCounts = [positiveCount,neutralCount,negativeCount]
     sentimentListCounts = []
-    tempSigns = ["+ve","+-ve","-ve"]
+    tempSigns = ["L","N","D"]
     signs = []
     for(var i=0;i<tempSentimentListCounts.length;i++){
         if(tempSentimentListCounts[i]>0){
@@ -438,11 +461,6 @@ function reviewShow(con, drg){
     showAgeEffectiveness(con,drg)
 }
 
-function showSideEffects(drugName){
-    // console.log(drugIdSidesDict[drugNameDict[drugName]]
-    // console.log(drugName)
-    $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class = boardSubtitle>Drug: " + drugName + "</p><p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
-}
 
 function resetAgeEffectiveness(){
     $(".midNLP").html('')

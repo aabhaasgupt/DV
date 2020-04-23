@@ -3,10 +3,11 @@ function donut(width, height){
     var $el = d3.select("body")
     var data = {};
     // var showTitle = true;
-    var radius = Math.min(width, height) / 3;
+    var radius = Math.min(width, height) / 2;
   
     var currentVal;
     var color = d3.scale.category20();
+    var col = {"L":"#E8EC67","N":"#F7F7FF","D":"#435058"}
     var pie = d3.layout.pie()
       .sort(null)
       .value(function(d) { return d.value; });
@@ -38,7 +39,10 @@ function donut(width, height){
           // Attach current value to g so that we can use it for animation
           .each(function(d) { this._current = d; })
           .attr("d", arc)
-          .style("fill", function(d) { return color(d.data.key); });
+          .style("fill", function(d) { 
+            // console.log(color(d.data.key),d.data.key)
+            return col[d.data.key]; 
+          });
         g.append("text")
             .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
             .attr("dy", ".35em")
@@ -57,7 +61,7 @@ function donut(width, height){
         g.on("mouseover", function(obj){
           // console.log(obj)
           svg.select("text.text-tooltip")
-          .attr("fill", function(d) { return color(obj.data.key); })
+          .attr("fill", function(d) { return col[obj.data.key]; })
           .text(function(d){
             return d[obj.data.key];
           });
