@@ -122,16 +122,6 @@
     border-radius: 10px;
     display:flex;
 }
-/* .tagCross{
-    width:10%;
-    position: relative;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.crossFas{
-    padding:10px;
-} */
 .searchTags{
     display: flex; 
     position: absolute;
@@ -150,8 +140,6 @@ body{
     top:100%;
     left: 50%;
     transform: translate(-50%,-50%);
-    /* background-color:green; */
-    /* z-index: -1; */
 }
 
 .graphTitle{
@@ -209,21 +197,16 @@ body{
 .graphPannelTitle{
     width:100%;
     height:5%;
-    /* background-color: blue; */
-
-    
 }
 .graphPannel{
     width:100%;
     height:95%;
-    /* background-color: grey; */
-    /* z-index: 9; */
+
 }
 
 .NLPPannel{
     width:25%;
     margin-right: 5px;
-    /* z-index: 100; */
 }
 
 .bar_rect{
@@ -278,9 +261,7 @@ svg {
     width:100%;
     height:30%;
     padding:4%;
-    /* background-color:blue; */
     border-radius: inherit;
-    /* border-radius: 5px 0px 0px 0px; */
 }
 
 .midNLP{
@@ -288,7 +269,6 @@ svg {
     width:100%;
     height:30%;
     border-radius: inherit;
-    /* background-color:green; */
 }
 
 .bottomNLP{
@@ -298,7 +278,6 @@ svg {
     width:100%;
     height:15%;
     border-radius: 0px 0px 0px 5px;
-    /* background-color:blue; */
 }
 
 

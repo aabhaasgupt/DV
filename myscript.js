@@ -26,7 +26,6 @@ drugsEffectiveDict = []
 drugIdSidesDict = []
 drugsSentimentDict =[]
 drugRecVals = []
-//barwidth = (50/(0+searchTags.length)).toString()+"%"
 barwidthDivider = 25
 stackMultiplier = 1
 barSeparator = 5
@@ -34,11 +33,7 @@ barMaxHeight = 80
 
 reviewThresholdNeutralStart = -0.2
 reviewThresholdPositiveStart = 0
-//stachColorArr = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"]
-// var colors = ["#4F000B","#720026","#CE4257","#FF7F51","#FF9B54","#47A025","#0B6E4F","#395B50","#FF570A"]
 var colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
-// try
-// var stachColorArr = {"con 1":"#b33040", "con 2":"#d25c4d", "a":"#f2b447", "b":"#d9d574"};
 function arrSum(arr){
     tot = 0
     for(var i in arr){
@@ -124,7 +119,6 @@ function makeGraph(drug_ids, drug_names){
     for(var ob in barGdata){
         curD = {}
         for(var key in barGdata[ob]){
-            // console.log(key, barGdata[ob][key])
             curD[key] = barGdata[ob][key]
         }
         data.push(curD)
@@ -137,10 +131,8 @@ function makeGraph(drug_ids, drug_names){
         })
     var stack = d3.layout.stack()
     var dataset = stack(stackdata)
-    // console.log("dataset", dataset)
     
     
-    // Set x, y and colors
     var x = d3.scale.ordinal()
     .domain(dataset[0].map(function(d) { return d.x; }))
     .rangeRoundBands([10, width-10], 0.02);
@@ -149,10 +141,8 @@ function makeGraph(drug_ids, drug_names){
     .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
     .range([height, 0]);
 
-    //var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
     
 
-    // Define and draw axes
     var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left")
@@ -163,7 +153,6 @@ function makeGraph(drug_ids, drug_names){
     var xAxis = d3.svg.axis()
     .scale(x)
     .orient("bottom");
-    // .tickFormat(d3.time.format("%Y"));
  
 
     svg.append("g")
@@ -176,14 +165,11 @@ function makeGraph(drug_ids, drug_names){
     .call(xAxis);
 
 
-    // Create groups for each series, rects for each segment 
     var groups = svg.selectAll("g.cost")
     .data(dataset)
     .enter().append("g")
     .attr("class", "cost")
     .style("fill", function(d, i) { 
-        // console.log("group")
-        // console.log(d)
         return colors[i]; });
 
 
@@ -201,10 +187,8 @@ function makeGraph(drug_ids, drug_names){
     .attr("y", function(d) { 
         return y(d.y0 + d.y); })
     .attr("height", function(d) { 
-        // console.log("yoo")
         return y(d.y0) - y(d.y0 + d.y); })
     .attr("width", x.rangeBand())
-    //////////////////////////// NEEDS WORK -> does not fire
     
 
     drugInd = 0
@@ -214,7 +198,6 @@ function makeGraph(drug_ids, drug_names){
                 .each(function(d,i){
                     h += 1
                     this.setAttribute('class',this.getAttribute('class') + "~" + drug_ids[drug_ids.length -1 - drugInd])
-                    // console.log(drugInd,this.getAttribute('class'))
                     if(h == searchTags.length-1){
                         drugInd += 1
                         h = -1
@@ -228,7 +211,6 @@ function makeGraph(drug_ids, drug_names){
                     showSideEffects(drugIdDict[stt[2]])
                     $(".drugOpt")
                         .each(function(){
-                            // drugIdDict[stt[2]]
                             if(drugIdDict[stt[2]] == $(this).text()){
                                 $(this).css("opacity","1");
                                 $(this).css("background-color","white");
@@ -255,14 +237,12 @@ function makeGraph(drug_ids, drug_names){
                     tooltip.style("display", "none")
                 })
                 .on("mousemove", function(d) {
-                    // console.log("onmove")
                     var xPosition = d3.mouse(this)[0] - 15;
                     var yPosition = d3.mouse(this)[1] - 25;
                     tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
                     tooltip.select("text").text(d.y);
                 });
 
-    // Draw legend
     var legend = svg.selectAll(".legend")
     .data(drug_ids)
     .enter().append("g")
@@ -283,9 +263,6 @@ function makeGraph(drug_ids, drug_names){
     .text(function(d, i) { 
         return drug_names[i]
     });
-    //$(".dataRect").onmouseover = console.log("nayaa")
-    // console.log($("searchbox").on('mouseover', console.log("nayaa")))// = console.log("nayaa"))
-    // Prep the tooltip bits, initial display is hidden
     var tooltip = svg.append("g")
     .attr("class", "tooltip")
     .style("display", "none");
@@ -302,7 +279,6 @@ function makeGraph(drug_ids, drug_names){
     .style("text-anchor", "middle")
     .attr("font-size", "12px")
     .attr("font-weight", "bold");
-    // console.log(tooltip)
 
     
     $(".drugOpt").off('mouseover')
@@ -310,11 +286,6 @@ function makeGraph(drug_ids, drug_names){
         if(sowSideEffectsOnDrugHover){
             showSideEffects($(this).text())
         }
-        // $(".drugOpt").each(function(){
-        //     $(this).css("opacity",drugOptOpacity);
-        // })
-        // $(this).css("opacity","1");
-        // console.log(this)
     })
 
     
@@ -323,7 +294,6 @@ function makeGraph(drug_ids, drug_names){
         if(hideSideEffectsOnMouseOut){
             resetSideEffects()
         }
-        // $(this).css("opacity",drugOptOpacity);
     })
 
     $(".drugOpt").each(function(d){
@@ -341,22 +311,16 @@ function calRecommendationVal(conds,drg){
     effVal = 0
     satVal = 0
     sentVal = 0
-    // console.log(conds)
     for(var con in conds){
-        // console.log(conds[con],drg)
-        // console.log(arrSum(drugsSentimentDict[conds[con]+"~"+drg]))
         sentVal += arrSum(drugsSentimentDict[conds[con]+"~"+drg])
-        // console.log("Sentiment", drugsSentimentDict[conds[con]+"~"+drg], "sentVal" ,sentVal)
 
         for(var i in drugsEffectiveDict[conds[con]+"~"+drg]){
             effVal += arrAvg(drugsEffectiveDict[conds[con]+"~"+drg][i])
         }
-        // console.log("Effective", drugsEffectiveDict[conds[con]+"~"+drg], "effVal" ,effVal)
 
         for(var i in drugsSatisfactionDict[conds[con]][drg]){
             satVal += (i/10) * drugsSatisfactionDict[conds[con]][drg][i]
         }
-        // console.log("Satisfaction", drugsSatisfactionDict[conds[con]][drg], "satVal" ,satVal)
     }
     return effVal+satVal+sentVal
 }
@@ -367,8 +331,8 @@ function getRecommendationSorted(Symptoms,Drugs,N){
     maxInd = 0
     for(var drg in Drugs){
         curVal = calRecommendationVal(Symptoms,Drugs[drg])
-        curVal = curVal.toString(); //If it's not already a String
-        curVal = curVal.slice(0, (curVal.indexOf("."))+3); //With 3 exposing the hundredths place
+        curVal = curVal.toString();
+        curVal = curVal.slice(0, (curVal.indexOf("."))+3); 
         drugs.push([Drugs[drg],Number(curVal)]) 
         vals.push(Number(curVal))
     }
@@ -377,7 +341,7 @@ function getRecommendationSorted(Symptoms,Drugs,N){
     for(i=0;i<drugs.length;i++){
         maxI = vals.indexOf(Math.max(...vals));
         transformation.push(maxI)
-        vals[maxI] = -1000000//.splice(maxI, 1);
+        vals[maxI] = -1000000
     }
 
     finalDrugs = []
@@ -389,13 +353,11 @@ function getRecommendationSorted(Symptoms,Drugs,N){
 }
 
 function resetSideEffects(){
-    // $(".bottomNLP").html("<p class = boardTitle > Side Effects</p><p class=pannelText></p>")
     $(".bottomNLP").html("")
 }
 
 function showSideEffects(drugName){
-    // console.log(drugIdSidesDict[drugNameDict[drugName]]
-    // console.log(drugName)
+
     $(".bottomNLP").html("<p class=pannelText>"+ drugIdSidesDict[drugNameDict[drugName]] +"</p>")
 }
 
@@ -405,11 +367,9 @@ function reviewHide(){
 }
 
 function reviewShow(con, drg){
-    //console.log(con, drg, drugsSentimentDict[con + "~" + drg])
     $(".topNLPConHeader").html("<p class = boardTitle>Condition: " + con + "</p>")
     $(".topNLP").html("")
 
-    // $(".topNLP").html("")
     sentimentList = drugsSentimentDict[con + "~" + drg]
     positiveCount = 0
     negativeCount = 0
@@ -435,9 +395,7 @@ function reviewShow(con, drg){
             signs.push(tempSigns[i])
         }
     }
-    
-    // console.log(sentimentListCounts)
-    // console.log(signs)
+
     var margin = {top: 40, right: 0, bottom: 20, left: 0};
     var width = Math.max(75,$(".topNLP").width() - margin.left - margin.right),
         height = $(".topNLP").height() - margin.top - margin.bottom;
@@ -452,7 +410,6 @@ function reviewShow(con, drg){
           text += signs[i] +" = " + data[signs[i]] + "<br/>";
         };
         d3.select("#data").html(text);
-        // console.log(data)
         return data;
       };
       
@@ -464,10 +421,8 @@ function reviewShow(con, drg){
 }
 
 function donut(width, height){  
-    // Default settings
     var $el = d3.select("body")
     var data = {};
-    // var showTitle = true;
     var radius = Math.min(width, height) / 2;
   
     var currentVal;
@@ -482,7 +437,6 @@ function donut(width, height){
   
     var object = {};
   
-    // Method for render/refresh graph
     object.render = function(){
       if(!svg){
         arc = d3.svg.arc()
@@ -501,11 +455,9 @@ function donut(width, height){
         .attr("class", "arc");
   
         g.append("path")
-          // Attach current value to g so that we can use it for animation
           .each(function(d) { this._current = d; })
           .attr("d", arc)
           .style("fill", function(d) { 
-            // console.log(color(d.data.key),d.data.key)
             return col[d.data.key]; 
           });
         g.append("text")
@@ -524,7 +476,6 @@ function donut(width, height){
             .style("font-size", radius/2.5+"px");
   
         g.on("mouseover", function(obj){
-          // console.log(obj)
           svg.select("text.text-tooltip")
           .attr("fill", function(d) { return col[obj.data.key]; })
           .text(function(d){
@@ -557,7 +508,6 @@ function donut(width, height){
       return object;
     };
   
-    // Getter and setter methods
     object.data = function(value){
       if (!arguments.length) return data;
       data = value;
@@ -620,16 +570,13 @@ function showAgeEffectiveness(con,drg){
             bottom: 15,
             left: 60
         };
-    // var margin = {top: 0, right: 0, bottom: 0, left: 0};
     var width = Math.max(75,$(".midNLP").width() - margin.left - margin.right),
         height = $(".midNLP").height() - margin.top - margin.bottom;
     
     
-    // console.log(con+"~"+drg)
     var data = []
     my_data_dict = drugsEffectiveDict[con+"~"+drg]
     for(var key in my_data_dict){
-            // console.log(my_data_dict[key])
             if(key == "[NULL]"){
                 continue
             }
@@ -660,10 +607,8 @@ function showAgeEffectiveness(con,drg){
             return d.name;
         }));
 
-    //make y axis to show bar names
     var yAxis = d3.svg.axis()
         .scale(y)
-        //no tick marks
         .tickSize(0)
         .orient("left");
 
@@ -676,7 +621,6 @@ function showAgeEffectiveness(con,drg){
         .enter()
         .append("g")
 
-    //append rects
     bars.append("rect")
         .attr("class", "HBCbar")
         .attr("y", function (d) {
@@ -688,14 +632,11 @@ function showAgeEffectiveness(con,drg){
             return x(d.value);
         });
 
-    //add a value label to the right of each bar
     bars.append("text")
         .attr("class", "HBClabel")
-        //y position of the label is halfway down the bar
         .attr("y", function (d) {
             return y(d.name) + y.rangeBand() / 2 + 4;
         })
-        //x position is 3 pixels to the right of the bar
         .attr("x", function (d) {
             return x(d.value) + 3;
         })
@@ -706,7 +647,6 @@ function showAgeEffectiveness(con,drg){
 
 function findCommonElements(inArrays) {
     
-  // check for valid input
   if (typeof inArrays==="undefined") return undefined;
   if (typeof inArrays[0]==="undefined") return undefined;
   
@@ -757,7 +697,6 @@ function updateDrugsPanel(){
         else{
             $(".drugList").html(blah)
         }
-        //$(".drugList").html(!drugsList ? '' : drugsList.join(''));
         makeGraph(drugPanelIds, drugPanelDrugs)
     }
     else{
@@ -814,17 +753,14 @@ function csvJSON(csv){
             continue
         }
         for(var j=0;j<headers.length;j++){
-            // if(currentline[j] == "")
-            // {
-            //     obj[headers[j]] = lines[i-1].split(",")[j];
-            // }
+
             obj[headers[j]] = currentline[j];
         }
   
         result.push(obj);
   
     }
-    return result; //JSON
+    return result;
 }
 
 function scoreDict(json,cond_list,key,value){
@@ -834,7 +770,7 @@ function scoreDict(json,cond_list,key,value){
     }
     
     for (i=0;i<json.length;i++)
-    {   //console.log(i, json[i])
+    {   
         if (cond_list.indexOf(json[i]["Condition"]) != -1){
             if (dict[json[i]["Condition"]][json[i][key]]==null){
                 dict[json[i]["Condition"]][json[i][key]] = {'5':0, '4':0, '3':0, '2':0, '1':0}
@@ -870,7 +806,7 @@ function getColAsArray(Json, key) {
 
     arr = [];
     for (i = 0; i < Json.length; i++) {
-        // console.log(i,myJ[i][key])
+
         arr.push(Json[i][key]);
     }
     return arr;
@@ -925,10 +861,7 @@ $(document).ready(function () {
         dataType: "text",
         success: function (data) {
             datasetJson = csvJSON(data)
-            // datasetJson = data//JSON.parse(data)
-            // console.log(datasetJson)
             conditions = getColAsArray(datasetJson,"Condition");
-            //conditions.pop()
             conditions = Array.from(new Set(conditions))
             drugIdDict = toDict(datasetJson, "DrugId", "Drug")
             drugNameDict = toDict(datasetJson, "Drug", "DrugId")
@@ -937,9 +870,7 @@ $(document).ready(function () {
             drugIdSidesDict = flatenKeyOfDict(toDict(datasetJson, "DrugId", "Sides"))
             drugsSentimentDict = sentDict(datasetJson, conditions, "DrugId", "SentimentScore")
             drugsEffectiveDict = EffDict(datasetJson, conditions, "DrugId", "Effectiveness")
-            //console.log(drugsEffectiveDict) 
         },
-        // recommendation -> sorted(ease_of_use * weight1 + sattisfaction + effectiveness + normalised_useful_count + score)
         complete: function(){
             $('.loadingScreen').remove();
           }
@@ -955,7 +886,6 @@ $(document).ready(function () {
             searchOptions = []
         }
 
-        //////////////////////////// NEEDS WORK -> detached search dropdown
         searchOptions = searchOptions.map(searchOption => `<li class=searchOpt value=${searchOption}>${searchOption}</li>`)
         $(".searchList").html(!searchOptions ? '' : searchOptions.join(''));
 
@@ -971,9 +901,6 @@ $(document).ready(function () {
                 alert("Sorry, you can only enter " + searchTagsLimit + " symptoms!")
             }
         });
-        // console.log($(".dataRect").on("mouseover", function(){
-        //     console.log("aaaaaaa")
-        // }))
 
     });
 
